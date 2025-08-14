@@ -6,6 +6,7 @@ export const useLeituraStore = defineStore('leitura', {
   state: () => ({
     leituras: [],
     estaCerregando: false,
+    erros: [],
   }),
   actions: {
     async fetchLeituras() {
@@ -19,6 +20,20 @@ export const useLeituraStore = defineStore('leitura', {
         this.estaCerregando = false
       }
     },
+    async cadastrar(data) {
+      this.estaCerregando = true
+      try {
+        const resposta = await api.post(`/leituras/cadastrar`, data)
+        console.log('Meu retorno ', resposta)
+        return resposta.data
+      } catch (error) {
+        console.log('Meu retorno error', error)
+        this.erros = error.response.data.errors
+        return error.response
+      } finally {
+        this.estaCerregando = false
+      }
+    },
     async deleteLeitura(id) {
       this.estaCerregando = true
       try {
@@ -28,6 +43,34 @@ export const useLeituraStore = defineStore('leitura', {
         console.error('Erro ao excluir leitura:', error)
       } finally {
         this.estaCerregando = false
+      }
+    },
+    async progresso(data) {
+      // this.estaCerregando = true
+      try {
+        const resposta = await api.post(`/leituras/progresso`, data)
+        console.log('Meu retorno ', resposta)
+        return resposta.data
+      } catch (error) {
+        console.log('Meu retorno error', error)
+        this.erros = error.response.data.errors
+        return error.response
+      } finally {
+        // this.estaCerregando = false
+      }
+    },
+    async avaliacao(data) {
+      // this.estaCerregando = true
+      try {
+        const resposta = await api.post(`/leituras/avaliar`, data)
+        console.log('Meu retorno ', resposta)
+        return resposta.data
+      } catch (error) {
+        console.log('Meu retorno error', error)
+        this.erros = error.response.data.errors
+        return error.response
+      } finally {
+        // this.estaCerregando = false
       }
     },
   },

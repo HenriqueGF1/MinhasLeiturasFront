@@ -1,17 +1,19 @@
-<template>
-  <ul v-if="erros.length" class="help is-danger">
-    <li v-for="(mensagem, index) in erros" :key="index">{{ mensagem }}</li>
-  </ul>
-</template>
-
 <script setup>
-defineProps({
+const props = defineProps({
   erros: {
-    type: Array,
-    default: () => [],
+    type: Object,
+    default: () => ({}),
   },
 })
 </script>
+
+<template>
+  <ul v-if="Object.values(erros).some((e) => e.length)" class="help is-danger">
+    <li v-for="(mensagens, key) in erros" :key="key">
+      <span v-for="(mensagem, index) in mensagens" :key="index">{{ mensagem }}</span>
+    </li>
+  </ul>
+</template>
 
 <style scoped>
 ul {
@@ -20,6 +22,6 @@ ul {
 }
 li {
   list-style-type: none;
-  padding: 8px;
+  padding: 8px 0;
 }
 </style>

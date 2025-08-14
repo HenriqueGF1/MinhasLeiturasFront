@@ -2,6 +2,8 @@
 import { onMounted } from 'vue'
 import { useLeituraStore } from '@/stores/leituraStore'
 import LeituraCardUsuario from '../../components/Leitura/LeituraCardUsuario.vue'
+import Progresso from '../../components/Leitura/Progresso.vue'
+import Avaliacao from '../../components/Leitura/Avaliacao.vue'
 import Carregando from '../../components/Carregando.vue'
 
 const leituraStore = useLeituraStore()
@@ -35,6 +37,9 @@ onMounted(() => {
               :leitura="leitura"
               @delete="leituraStore.deleteLeitura(leitura.id_leitura)"
             />
+            <Progresso :id_leitura="leitura.id_leitura" />
+            --
+            <Avaliacao :id_leitura="leitura.id_leitura" />
           </div>
         </div>
       </div>
