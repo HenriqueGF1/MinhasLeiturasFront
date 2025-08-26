@@ -36,6 +36,9 @@ const toggleBurger = () => {
         <router-link class="navbar-item" :to="{ name: 'usuario-leituras' }"
           >Minhas Leituras</router-link
         >
+        <router-link class="navbar-item" :to="{ name: 'avaliacao-pesquisa' }"
+          >Avaliações</router-link
+        >
       </div>
 
       <div class="navbar-end">

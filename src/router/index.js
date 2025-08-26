@@ -33,6 +33,11 @@ const router = createRouter({
       name: 'usuario-leituras',
       component: () => import('@/views/Leitura/UsuarioLeituras.vue'),
     },
+    {
+      path: '/leituras/avaliar/pesquisa',
+      name: 'avaliacao-pesquisa',
+      component: () => import('@/views/Avaliacao/Avaliacoes.vue'),
+    },
   ],
 })
 
