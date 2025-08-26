@@ -29,9 +29,9 @@ const leitura = reactive({
   qtd_paginas: '',
   isbn: '',
   data_registro: '',
-  id_usuario: null,
+  id_usuario: 1,
   id_status_leitura: null,
-  id_generos: [],
+  id_genero: [],
 })
 
 // Erros de validação
@@ -82,12 +82,12 @@ watch(autorSelecionado, (novo) => sincronizarSelecao(novo, 'id_autor', 'nome_aut
 watch(editoraSelecionado, (novo) => sincronizarSelecao(novo, 'id_editora', 'descricao_editora'))
 
 watch(generosSelecionados, (novos) => {
-  leitura.id_generos = []
+  leitura.id_genero = []
   novos.forEach((g) => {
     if (g.id_genero) {
-      leitura.id_generos.push(g.id_genero)
+      leitura.id_genero.push(g.id_genero)
     } else {
-      leitura.id_generos.push({ id_genero: null, nome: g.nome })
+      leitura.id_genero.push({ id_genero: null, nome: g.nome })
     }
   })
 })
