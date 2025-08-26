@@ -9,7 +9,7 @@ import Carregando from '../../components/Carregando.vue'
 const leituraStore = useLeituraStore()
 
 onMounted(() => {
-  leituraStore.fetchLeituras()
+  leituraStore.fetchLeiturasUsuario()
 })
 </script>
 
@@ -34,10 +34,10 @@ onMounted(() => {
             class="column is-4-tablet is-3-desktop"
           >
             <LeituraCardUsuario
-              :leitura="leitura"
+              :leitura="leitura.leitura"
               @delete="leituraStore.deleteLeitura(leitura.id_leitura)"
             />
-            <Progresso :id_leitura="leitura.id_leitura" />
+            <Progresso v-if="leitura.status === 2" :id_leitura="leitura.id_leitura" />
             --
             <Avaliacao :id_leitura="leitura.id_leitura" />
           </div>

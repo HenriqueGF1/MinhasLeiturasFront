@@ -1,18 +1,28 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
-// import Carregando from '../../components/Carregando.vue'
+import AutorSelect from '../../components/Autor/Select.vue'
+import EditoraSelect from '../../components/Editora/Select.vue'
+import GenerosSelect from '../../components/Generos/Select.vue'
+
 import { useLeituraStore } from '@/stores/leituraStore'
 import { useGeneroLeituraStore } from '@/stores/generoLeituraStore'
+import { useAutoresStore } from '@/stores/autoresStore'
+import { useEditorasStore } from '@/stores/editorasStore'
 
 const leituraStore = useLeituraStore()
 const generoStore = useGeneroLeituraStore()
+const autoresStore = useAutoresStore()
+const editorasStore = useEditorasStore()
 
+// Estado principal da leitura
 const leitura = reactive({
   titulo: '',
   descricao: '',
   capa: '',
+  id_editora: null,
   descricao_editora: '',
+  id_autor: null,
   nome_autor: '',
   data_publicacao: '',
   qtd_capitulos: '',
@@ -21,31 +31,77 @@ const leitura = reactive({
   data_registro: '',
   id_usuario: null,
   id_status_leitura: null,
-  id_genero: null,
+  id_generos: [],
 })
 
+// Erros de validação
 const novosErros = reactive({})
 
-const generos = reactive({})
+// Estados temporários dos selects
+const autorSelecionado = ref(null)
+const editoraSelecionado = ref(null)
+const generosSelecionados = ref([])
 
 onMounted(() => {
   generoStore.fetchGeneros()
+  autoresStore.fetchAutores()
+  editorasStore.fetchEditoras()
 })
 
-console.log('Response ', generos)
+// Função genérica para sincronizar seleção (autor/editora) com leitura
+function sincronizarSelecao(selecionado, idKey, nomeKey) {
+  if (selecionado) {
+    if (selecionado[idKey]) {
+      leitura[idKey] = selecionado[idKey]
+      leitura[nomeKey] = ''
+    } else {
+      leitura[idKey] = null
+      leitura[nomeKey] = selecionado.nome ?? selecionado.descricao
+    }
+  } else {
+    leitura[idKey] = null
+    leitura[nomeKey] = ''
+  }
+}
 
+// Criar novo autor/editora/gênero
+function adicionarNovoAutor(nome) {
+  autorSelecionado.value = { id_autor: null, nome }
+}
+
+function adicionarNovaEditora(descricao) {
+  editoraSelecionado.value = { id_editora: null, descricao }
+}
+
+function adicionarNovoGenero(nome) {
+  generosSelecionados.value.push({ id_genero: null, nome })
+}
+
+// Watchers para atualizar leitura
+watch(autorSelecionado, (novo) => sincronizarSelecao(novo, 'id_autor', 'nome_autor'))
+watch(editoraSelecionado, (novo) => sincronizarSelecao(novo, 'id_editora', 'descricao_editora'))
+
+watch(generosSelecionados, (novos) => {
+  leitura.id_generos = []
+  novos.forEach((g) => {
+    if (g.id_genero) {
+      leitura.id_generos.push(g.id_genero)
+    } else {
+      leitura.id_generos.push({ id_genero: null, nome: g.nome })
+    }
+  })
+})
+
+// Cadastro
 const cadastrarLeitura = async () => {
   Object.assign(novosErros, {})
 
+  console.log('Dados que serão enviados:', leitura)
+
+  // Simulação de envio
   const response = await leituraStore.cadastrar(leitura)
-
   Object.assign(novosErros, leituraStore.erros)
-
-  console.log('Response ', response)
-
-  if (!response.success) {
-    return
-  }
+  if (!response.success) return
 }
 </script>
 
@@ -59,12 +115,8 @@ const cadastrarLeitura = async () => {
           <ErroMensagemValidacaoForm :erros="novosErros" />
         </div>
 
-        <!-- <div v-if="generoStore.estaCerregandoGenero">
-          <Carregando />
-        </div> -->
-
         <form @submit.prevent="cadastrarLeitura">
-          <!-- Linha 1 -->
+          <!-- Linha 1: Título + Autor -->
           <div class="columns">
             <div class="column">
               <div class="field">
@@ -72,42 +124,27 @@ const cadastrarLeitura = async () => {
                 <div class="control">
                   <input id="titulo" type="text" v-model="leitura.titulo" class="input" />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.titulo" />
-                </p>
+                <ErroMensagemValidacaoForm v-if="novosErros.titulo" :erros="novosErros.titulo" />
               </div>
             </div>
 
             <div class="column">
-              <div class="field">
-                <label class="label" for="nome_autor">Autor</label>
-                <div class="control">
-                  <input id="nome_autor" type="text" v-model="leitura.nome_autor" class="input" />
-                </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.nome_autor" />
-                </p>
-              </div>
+              <AutorSelect
+                v-model="autorSelecionado"
+                :options="autoresStore.autores"
+                @campoAutor="adicionarNovoAutor"
+              />
             </div>
           </div>
 
-          <!-- Linha 2 -->
+          <!-- Linha 2: Editora + ISBN -->
           <div class="columns">
             <div class="column">
-              <div class="field">
-                <label class="label" for="descricao_editora">Editora</label>
-                <div class="control">
-                  <input
-                    id="descricao_editora"
-                    type="text"
-                    v-model="leitura.descricao_editora"
-                    class="input"
-                  />
-                </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.descricao_editora" />
-                </p>
-              </div>
+              <EditoraSelect
+                v-model="editoraSelecionado"
+                :options="editorasStore.editoras"
+                @campoEditora="adicionarNovaEditora"
+              />
             </div>
 
             <div class="column">
@@ -116,14 +153,12 @@ const cadastrarLeitura = async () => {
                 <div class="control">
                   <input id="isbn" type="text" v-model="leitura.isbn" class="input" />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.isbn" />
-                </p>
+                <ErroMensagemValidacaoForm v-if="novosErros.isbn" :erros="novosErros.isbn" />
               </div>
             </div>
           </div>
 
-          <!-- Linha 3 -->
+          <!-- Linha 3: Capítulos + Páginas -->
           <div class="columns">
             <div class="column">
               <div class="field">
@@ -136,9 +171,10 @@ const cadastrarLeitura = async () => {
                     class="input"
                   />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.qtd_capitulos" />
-                </p>
+                <ErroMensagemValidacaoForm
+                  v-if="novosErros.qtd_capitulos"
+                  :erros="novosErros.qtd_capitulos"
+                />
               </div>
             </div>
 
@@ -153,14 +189,15 @@ const cadastrarLeitura = async () => {
                     class="input"
                   />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.qtd_paginas" />
-                </p>
+                <ErroMensagemValidacaoForm
+                  v-if="novosErros.qtd_paginas"
+                  :erros="novosErros.qtd_paginas"
+                />
               </div>
             </div>
           </div>
 
-          <!-- Linha 4 -->
+          <!-- Linha 4: Datas -->
           <div class="columns">
             <div class="column">
               <div class="field">
@@ -173,9 +210,10 @@ const cadastrarLeitura = async () => {
                     class="input"
                   />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.data_publicacao" />
-                </p>
+                <ErroMensagemValidacaoForm
+                  v-if="novosErros.data_publicacao"
+                  :erros="novosErros.data_publicacao"
+                />
               </div>
             </div>
 
@@ -190,36 +228,33 @@ const cadastrarLeitura = async () => {
                     class="input"
                   />
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.data_registro" />
-                </p>
+                <ErroMensagemValidacaoForm
+                  v-if="novosErros.data_registro"
+                  :erros="novosErros.data_registro"
+                />
               </div>
             </div>
           </div>
 
-          <!-- Linha 5 -->
+          <!-- Linha 5: Capa -->
           <div class="field">
             <label class="label" for="capa">URL da Capa</label>
             <div class="control">
               <input id="capa" type="text" v-model="leitura.capa" class="input" />
             </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.capa" />
-            </p>
+            <ErroMensagemValidacaoForm v-if="novosErros.capa" :erros="novosErros.capa" />
           </div>
 
-          <!-- Linha 6 -->
+          <!-- Linha 6: Descrição -->
           <div class="field">
             <label class="label" for="descricao">Descrição</label>
             <div class="control">
               <textarea id="descricao" v-model="leitura.descricao" class="textarea"></textarea>
             </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.descricao" />
-            </p>
+            <ErroMensagemValidacaoForm v-if="novosErros.descricao" :erros="novosErros.descricao" />
           </div>
 
-          <!-- Linha 7 -->
+          <!-- Linha 7: Status + Gêneros -->
           <div class="columns">
             <div class="column">
               <div class="field">
@@ -231,30 +266,19 @@ const cadastrarLeitura = async () => {
                     <option value="3">Concluído</option>
                   </select>
                 </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.id_status_leitura" />
-                </p>
+                <ErroMensagemValidacaoForm
+                  v-if="novosErros.id_status_leitura"
+                  :erros="novosErros.id_status_leitura"
+                />
               </div>
             </div>
 
             <div class="column">
-              <div class="field">
-                <label class="label" for="id_genero">Gêneros</label>
-                <div class="control select is-fullwidth">
-                  <select id="id_genero" v-model="leitura.id_genero">
-                    <option
-                      v-for="genero in generoStore.generos"
-                      :key="genero.id_leitura"
-                      :value="genero.id_leitura"
-                    >
-                      {{ genero.titulo }}
-                    </option>
-                  </select>
-                </div>
-                <p v-if="Object.keys(novosErros).length">
-                  <ErroMensagemValidacaoForm :erros="novosErros.id_genero" />
-                </p>
-              </div>
+              <GenerosSelect
+                v-model="generosSelecionados"
+                :options="generoStore.generos"
+                @campoGenero="adicionarNovoGenero"
+              />
             </div>
           </div>
 
@@ -275,9 +299,3 @@ const cadastrarLeitura = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.aa {
-  margin: 300px;
-}
-</style>

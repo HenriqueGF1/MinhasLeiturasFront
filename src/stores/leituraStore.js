@@ -20,6 +20,18 @@ export const useLeituraStore = defineStore('leitura', {
         this.estaCerregando = false
       }
     },
+    async fetchLeiturasUsuario() {
+      this.estaCerregando = true
+      try {
+        const response = await api.get('/leituras/usuario')
+        console.log('Leituras do Usuario ', response)
+        this.leituras = response.data.data
+      } catch (error) {
+        console.error('Erro ao carregar leituras do usuario:', error)
+      } finally {
+        this.estaCerregando = false
+      }
+    },
     async cadastrar(data) {
       this.estaCerregando = true
       try {
@@ -54,6 +66,7 @@ export const useLeituraStore = defineStore('leitura', {
       } catch (error) {
         console.log('Meu retorno error', error)
         this.erros = error.response.data.errors
+        console.log('Meus erros ', this.erros)
         return error.response
       } finally {
         // this.estaCerregando = false

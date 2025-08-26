@@ -12,9 +12,9 @@ export const useGeneroLeituraStore = defineStore('genero', {
     async fetchGeneros() {
       this.estaCerregandoGenero = true
       try {
-        const response = await api.get('/leituras')
-        console.log('DO STORE RETONRO  ', response)
-        this.generos = response.data.data
+        const response = await api.get('/generos')
+        console.log('Genero Store Retorno ', response.data)
+        this.generos = response.data
       } catch (error) {
         console.error('Erro ao carregar generos:', error)
       } finally {
