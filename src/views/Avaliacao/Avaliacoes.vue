@@ -27,7 +27,13 @@ onMounted(() => {
             :key="avaliacao.id_avaliacao_leitura"
             class="column is-6"
           >
-            <AvaliacoesCard :avaliacao="avaliacao" :leitura="avaliacao.leituras[0]" />
+            <AvaliacoesCard
+              :avaliacao="avaliacao"
+              :leitura="avaliacao.leituras[0]"
+              @deletarAvaliacaoLeitura="
+                () => avaliacoesStore.deleteAvaliacaoLeitura(avaliacao.id_avaliacao_leitura)
+              "
+            />
           </div>
         </div>
       </div>

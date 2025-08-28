@@ -21,5 +21,16 @@ export const useAvaliacoesStore = defineStore('avaliacao', {
         this.estaCarregandoAvaliacao = false
       }
     },
+    async deleteAvaliacaoLeitura(id_avaliacao_leitura) {
+      // this.estaCarregando = true
+      try {
+        await api.delete(`/leituras/avaliar/deletar/${id_avaliacao_leitura}`)
+        await this.fetchAvaliacoes()
+      } catch (error) {
+        console.error('Erro ao excluir avaliação leitura:', error)
+      } finally {
+        // this.estaCarregando = false
+      }
+    },
   },
 })

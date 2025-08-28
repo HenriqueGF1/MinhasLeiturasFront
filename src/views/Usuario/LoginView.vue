@@ -114,12 +114,13 @@ const realizarLogin = async () => {
     </div>
 
     <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
-      <div v-if="leituraStore.estaCarregando">
+      <!-- Mostra o loader enquanto carrega OU se não houver leitura -->
+      <div v-if="leituraStore.estaCarregando || !leituraStore.leituraAleatoria">
         <Carregando />
       </div>
-      <div v-else>
-        <LeituraAleatoria :leitura="leituraStore.leituraAleatoria" />
-      </div>
+
+      <!-- Renderiza só quando existir um objeto válido -->
+      <LeituraAleatoria v-else :leitura="leituraStore.leituraAleatoria" />
     </div>
   </div>
 </template>

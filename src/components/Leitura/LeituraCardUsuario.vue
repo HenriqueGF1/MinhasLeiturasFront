@@ -1,3 +1,24 @@
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  leitura: { type: Object, required: true },
+})
+
+const emit = defineEmits(['delete'])
+
+function handleDelete() {
+  emit('delete')
+}
+
+const descricaoCurta = computed(() => {
+  if (!props.leitura.descricao) return ''
+  return props.leitura.descricao.length > 200
+    ? props.leitura.descricao.slice(0, 200) + '...'
+    : props.leitura.descricao
+})
+</script>
+
 <template>
   <div class="card leitura-card">
     <div class="card-image">
@@ -31,27 +52,6 @@
     </footer>
   </div>
 </template>
-
-<script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
-  leitura: { type: Object, required: true },
-})
-
-const emit = defineEmits(['delete'])
-
-function handleDelete() {
-  emit('delete')
-}
-
-const descricaoCurta = computed(() => {
-  if (!props.leitura.descricao) return ''
-  return props.leitura.descricao.length > 200
-    ? props.leitura.descricao.slice(0, 200) + '...'
-    : props.leitura.descricao
-})
-</script>
 
 <style scoped>
 .leitura-card {

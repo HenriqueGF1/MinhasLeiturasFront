@@ -1,7 +1,16 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import api from '../../api/instanceAxios'
 import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
+import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+import { useLeituraStore } from '@/stores/leituraStore'
+import Carregando from '../../components/Carregando.vue'
+
+const leituraStore = useLeituraStore()
+
+onMounted(() => {
+  leituraStore.fetchLeituraAleatoria()
+})
 
 const usuario = reactive({
   nome: 'Ana',
@@ -34,19 +43,14 @@ const cadastrarUsuario = async () => {
   erros.data_nascimento = []
 
   try {
-    const response = await api.post('/usuario/cadastrar', {
-      nome: usuario.nome,
-      email: usuario.email,
-      password: usuario.password,
-      data_nascimento: usuario.data_nascimento,
-    })
+    const response = await api.post('/usuario/cadastrar', { ...usuario })
 
     const token = response.data.authorisation.token
-    localStorage.setItem('token', token)
+    localStorage.setItem('auth_token', token)
     console.log('Cadastro bem-sucedido:', response)
   } catch (error) {
     if (error.response?.status === 500) {
-      erros.geral.push('Erro. Tente novamente mais tarde.')
+      erros.geral = ['Erro. Tente novamente mais tarde.']
     } else if (error.response?.data?.errors) {
       const dataErrors = error.response.data.errors
       erros.nome = dataErrors.nome ?? []
@@ -54,7 +58,7 @@ const cadastrarUsuario = async () => {
       erros.password = dataErrors.password ?? []
       erros.data_nascimento = dataErrors.data_nascimento ?? []
     } else {
-      erros.geral.push('Ocorreu um erro inesperado.')
+      erros.geral = ['Ocorreu um erro inesperado.']
     }
   } finally {
     carregar.value = false
@@ -95,7 +99,7 @@ const cadastrarUsuario = async () => {
             <div class="control">
               <input
                 id="email"
-                type="text"
+                type="email"
                 v-model="usuario.email"
                 class="input"
                 :class="{ 'is-danger': erros.email.length }"
@@ -148,6 +152,15 @@ const cadastrarUsuario = async () => {
           </div>
         </form>
       </div>
+    </div>
+    <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
+      <!-- Mostra o loader enquanto carrega OU se não houver leitura -->
+      <div v-if="leituraStore.estaCarregando || !leituraStore.leituraAleatoria">
+        <Carregando />
+      </div>
+
+      <!-- Renderiza só quando existir um objeto válido -->
+      <LeituraAleatoria v-else :leitura="leituraStore.leituraAleatoria" />
     </div>
   </div>
 </template>
