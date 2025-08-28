@@ -1,12 +1,42 @@
-<!-- components/LeituraCard.vue -->
+<template>
+  <div class="card leitura-card">
+    <div class="card-image">
+      <figure class="image is-4by3">
+        <img :src="leitura.capa" :alt="leitura.titulo" />
+      </figure>
+    </div>
+
+    <div class="card-content">
+      <div class="content has-text-centered">
+        <p class="title is-5">{{ leitura.titulo }}</p>
+        <p class="subtitle is-6">
+          {{ leitura.autor || 'Autor desconhecido' }}
+        </p>
+
+        <div class="descricao tooltip" :data-tooltip="leitura.descricao">
+          {{ descricaoCurta }}
+        </div>
+
+        <small class="has-text-grey">
+          📅 Publicado: {{ leitura.data_publicacao }} | 📚 {{ leitura.qtd_paginas }} páginas | 📖
+          {{ leitura.qtd_capitulos }} capítulos
+        </small>
+      </div>
+    </div>
+
+    <footer class="card-footer" style="padding: 0.75rem; text-align: center">
+      <button @click="handleDelete" class="button is-danger is-small" style="margin: 0 auto">
+        Excluir
+      </button>
+    </footer>
+  </div>
+</template>
+
 <script setup>
 import { computed } from 'vue'
 
 const props = defineProps({
-  leitura: {
-    type: Object,
-    required: true,
-  },
+  leitura: { type: Object, required: true },
 })
 
 const emit = defineEmits(['delete'])
@@ -23,71 +53,37 @@ const descricaoCurta = computed(() => {
 })
 </script>
 
-<template>
-  <div class="card leitura-card">
-    <div class="card-image">
-      <figure class="image is-4by3">
-        <img :src="leitura.capa" :alt="leitura.titulo" />
-      </figure>
-    </div>
-
-    <div class="card-content">
-      <p class="title is-5 has-text-centered">{{ leitura.titulo }}</p>
-      <p class="subtitle is-6 has-text-centered">
-        {{ leitura.autor || 'Autor desconhecido' }}
-      </p>
-
-      <!-- Tooltip custom -->
-      <div class="content tooltip" :data-tooltip="leitura.descricao">
-        {{ descricaoCurta }}
-        <br />
-        <small class="has-text-grey">
-          📅 Publicado: {{ leitura.data_publicacao }} | 📚 {{ leitura.qtd_paginas }} páginas | 📖
-          {{ leitura.qtd_capitulos }} capítulos
-        </small>
-      </div>
-    </div>
-
-    <footer class="card-footer">
-      <button @click="handleDelete" class="button is-danger is-fullwidth">Excluir</button>
-    </footer>
-  </div>
-</template>
-
 <style scoped>
 .leitura-card {
-  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.card-image {
-  flex-shrink: 0;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .card-image img {
-  object-fit: contain;
+  object-fit: cover;
   height: 250px;
   width: 100%;
 }
 
 .card-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.5rem; /* Espaçamento interno mais compacto */
+  padding: 1rem;
 }
 
-.card-footer {
-  margin-top: auto;
+.descricao {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  line-height: 1.3;
 }
 
-.title,
-.subtitle {
-  text-align: center;
-}
-
-/* Tooltip estilo Bulma-like */
+/* Tooltip */
 .tooltip {
   position: relative;
   cursor: help;
@@ -101,19 +97,24 @@ const descricaoCurta = computed(() => {
   bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
-  background: #fff;
-  color: black;
+  background: #f5f5f5;
+  color: #333;
   padding: 0.5rem;
   border-radius: 6px;
   white-space: pre-wrap;
-  width: 250px;
+  width: 280px;
   font-size: 0.85rem;
   text-align: center;
   z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: opacity 0.2s ease-in-out;
 }
 
 .tooltip:hover::after {
   opacity: 1;
+}
+
+.card-footer {
+  margin-top: auto;
 }
 </style>

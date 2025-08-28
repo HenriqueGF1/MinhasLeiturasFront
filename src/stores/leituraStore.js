@@ -5,85 +5,86 @@ import api from '../api/instanceAxios'
 export const useLeituraStore = defineStore('leitura', {
   state: () => ({
     leituras: [],
-    estaCerregando: false,
+    leiturasUsuario: [],
+    leituraAleatoria: null,
+    estaCarregando: false,
     erros: [],
   }),
   actions: {
     async fetchLeituras() {
-      this.estaCerregando = true
+      this.estaCarregando = true
       try {
         const response = await api.get('/leituras')
         this.leituras = response.data.data
       } catch (error) {
         console.error('Erro ao carregar leituras:', error)
       } finally {
-        this.estaCerregando = false
+        this.estaCarregando = false
+      }
+    },
+    async fetchLeituraAleatoria() {
+      this.estaCarregando = true
+      try {
+        const response = await api.get('/leituras/aleatoria')
+        this.leituraAleatoria = response.data.data
+      } catch (error) {
+        console.error('Erro ao carregar leitura aleatória:', error)
+      } finally {
+        this.estaCarregando = false
       }
     },
     async fetchLeiturasUsuario() {
-      this.estaCerregando = true
+      this.estaCarregando = true
       try {
         const response = await api.get('/leituras/usuario')
         console.log('Leituras do Usuario ', response)
-        this.leituras = response.data.data
+        this.leiturasUsuario = response.data.data
       } catch (error) {
         console.error('Erro ao carregar leituras do usuario:', error)
       } finally {
-        this.estaCerregando = false
+        this.estaCarregando = false
       }
     },
     async cadastrar(data) {
-      this.estaCerregando = true
+      this.estaCarregando = true
       try {
         const resposta = await api.post(`/leituras/cadastrar`, data)
-        console.log('Meu retorno ', resposta)
         return resposta.data
       } catch (error) {
-        console.log('Meu retorno error', error)
-        this.erros = error.response.data.errors
+        this.erros = error?.response?.data?.errors ?? []
         return error.response
       } finally {
-        this.estaCerregando = false
+        this.estaCarregando = false
       }
     },
-    async deleteLeitura(id) {
-      this.estaCerregando = true
+    async deleteLeitura(id_usuario_leitura) {
+      // this.estaCarregando = true
+      console.log('Id que eu vou excluir ', id_usuario_leitura)
       try {
-        await api.delete(`/leituras/excluir/${id}`)
-        this.fetchLeituras()
+        await api.delete(`/leituras/excluir/${id_usuario_leitura}`)
+        await this.fetchLeiturasUsuario()
       } catch (error) {
         console.error('Erro ao excluir leitura:', error)
       } finally {
-        this.estaCerregando = false
+        // this.estaCarregando = false
       }
     },
     async progresso(data) {
-      // this.estaCerregando = true
       try {
         const resposta = await api.post(`/leituras/progresso`, data)
-        console.log('Meu retorno ', resposta)
         return resposta.data
       } catch (error) {
-        console.log('Meu retorno error', error)
-        this.erros = error.response.data.errors
-        console.log('Meus erros ', this.erros)
+        this.erros = error?.response?.data?.errors ?? []
         return error.response
-      } finally {
-        // this.estaCerregando = false
       }
     },
     async avaliacao(data) {
-      // this.estaCerregando = true
       try {
         const resposta = await api.post(`/leituras/avaliar`, data)
-        console.log('Meu retorno ', resposta)
         return resposta.data
       } catch (error) {
-        console.log('Meu retorno error', error)
-        this.erros = error.response.data.errors
+        this.erros = error?.response?.data?.errors ?? []
         return error.response
-      } finally {
-        // this.estaCerregando = false
       }
     },
   },

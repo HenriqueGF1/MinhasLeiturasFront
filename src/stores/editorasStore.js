@@ -5,20 +5,21 @@ import api from '../api/instanceAxios'
 export const useEditorasStore = defineStore('editoras', {
   state: () => ({
     editoras: [],
-    estaCerregandoEditoras: false,
+    estaCarregandoEditoras: false,
     erros: [],
   }),
   actions: {
     async fetchEditoras() {
-      this.estaCerregandoEditoras = true
+      this.estaCarregandoEditoras = true
       try {
         const response = await api.get('/editoras')
-        console.log('Editora Store Retorno ', response)
+        console.log('Editora Store Retorno', response)
         this.editoras = response.data
       } catch (error) {
         console.error('Erro ao carregar editoras:', error)
+        this.erros = error?.response?.data?.errors ?? []
       } finally {
-        this.estaCerregandoEditoras = false
+        this.estaCarregandoEditoras = false
       }
     },
   },

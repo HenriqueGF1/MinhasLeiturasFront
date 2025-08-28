@@ -16,30 +16,46 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title has-text-centered">Tela de Leituras do Usuario</h1>
+      <h1 class="title has-text-centered">Tela de Leituras do Usuário</h1>
 
-      <div v-if="leituraStore.estaCerregando">
+      <!-- Enquanto estiver carregando -->
+      <div v-if="leituraStore.estaCarregando">
         <Carregando />
       </div>
 
-      <div v-else-if="leituraStore.leituras.length === 0" class="has-text-centered">
-        <p class="subtitle">Nenhuma leitura disponível.</p>
-      </div>
-
+      <!-- Quando terminar de carregar -->
       <div v-else>
-        <div class="columns is-multiline is-centered">
+        <!-- Se não houver leituras -->
+        <div
+          v-if="!leituraStore.leiturasUsuario || leituraStore.leiturasUsuario.length === 0"
+          class="has-text-centered"
+        >
+          <p class="subtitle">Nenhuma leitura disponível.</p>
+        </div>
+
+        <!-- Se houver leituras -->
+        <div v-else class="columns is-multiline is-centered">
           <div
-            v-for="leitura in leituraStore.leituras"
+            v-for="leitura in leituraStore.leiturasUsuario"
             :key="leitura.id_leitura"
             class="column is-4-tablet is-3-desktop"
           >
             <LeituraCardUsuario
               :leitura="leitura.leitura"
-              @delete="leituraStore.deleteLeitura(leitura.id_leitura)"
+              @delete="() => leituraStore.deleteLeitura(leitura.id_usuario_leitura)"
             />
-            <Progresso v-if="leitura.status === 2" :id_leitura="leitura.id_leitura" />
-            --
-            <Avaliacao :id_leitura="leitura.id_leitura" />
+
+            <div class="box mt-4">
+              <div class="buttons">
+                <div v-if="leitura.id_status_leitura === 2" class="mr-2">
+                  <Progresso :id_leitura="leitura.id_leitura" />
+                </div>
+
+                <div v-if="!leitura.avaliacao">
+                  <Avaliacao :id_leitura="leitura.id_leitura" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

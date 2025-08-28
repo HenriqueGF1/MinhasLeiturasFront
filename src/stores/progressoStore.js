@@ -5,12 +5,12 @@ import api from '../api/instanceAxios'
 export const useProgressoStore = defineStore('progresso', {
   state: () => ({
     progressoTotal: [],
-    estaCerregando: false,
+    estaCarregando: false,
     erros: [],
   }),
   actions: {
     async fetchProgressoTotal(data) {
-      this.estaCerregando = true
+      this.estaCarregando = true
       try {
         const resposta = await api.post(`/leituras/progresso/total`, data)
         this.progressoTotal = resposta.data
@@ -18,7 +18,7 @@ export const useProgressoStore = defineStore('progresso', {
         console.error('Erro ao carregar progresso total:', error)
         this.progressoTotal = []
       } finally {
-        this.estaCerregando = false
+        this.estaCarregando = false
       }
     },
   },

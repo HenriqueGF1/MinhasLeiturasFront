@@ -1,17 +1,26 @@
 <script setup>
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
-  modelValue: Array, // array de gêneros
+  modelValue: Array,
   options: Array,
 })
 
 const emit = defineEmits(['update:modelValue', 'campoGenero'])
 
-function adicionarNovoGenero(nome) {
-  emit('campoGenero', nome)
-}
+const localValue = ref(props.modelValue || [])
+
+watch(
+  () => props.modelValue,
+  (novo) => {
+    localValue.value = novo || []
+  },
+)
+
+watch(localValue, (novo) => {
+  emit('update:modelValue', novo)
+})
 </script>
 
 <template>
@@ -19,14 +28,13 @@ function adicionarNovoGenero(nome) {
     <label class="label" for="">Gêneros</label>
     <div class="control">
       <v-select
-        :model-value="props.modelValue"
+        v-model="localValue"
         :options="props.options"
         label="nome"
-        :reduce="(g) => g"
+        :reduce="(generos) => generos"
         multiple
         taggable
-        @update:modelValue="emit('update:modelValue', $event)"
-        @new="adicionarNovoGenero"
+        @new=""
         class="is-fullwidth"
       />
     </div>

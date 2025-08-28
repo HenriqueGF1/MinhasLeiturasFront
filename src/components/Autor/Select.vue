@@ -1,6 +1,5 @@
 <script setup>
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
 
 const props = defineProps({
   modelValue: Object,
@@ -8,10 +7,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'campoAutor'])
-
-function adicionarNovoAutor(nome) {
-  emit('campoAutor', nome)
-}
 </script>
 
 <template>
@@ -25,7 +20,7 @@ function adicionarNovoAutor(nome) {
         :reduce="(autor) => autor"
         taggable
         @update:modelValue="emit('update:modelValue', $event)"
-        @new="adicionarNovoAutor"
+        @new=""
         class="is-fullwidth"
       />
     </div>

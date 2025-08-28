@@ -16,7 +16,7 @@ onMounted(() => {
     <div class="container">
       <h1 class="title has-text-centered">Tela de Leituras</h1>
 
-      <div v-if="leituraStore.estaCerregando">
+      <div v-if="leituraStore.estaCarregando">
         <Carregando />
       </div>
 

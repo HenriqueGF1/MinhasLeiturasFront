@@ -1,7 +1,16 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import api from '../../api/instanceAxios'
 import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
+import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+import { useLeituraStore } from '@/stores/leituraStore'
+import Carregando from '../../components/Carregando.vue'
+
+const leituraStore = useLeituraStore()
+
+onMounted(() => {
+  leituraStore.fetchLeituraAleatoria()
+})
 
 const usuario = reactive({
   email: 'Henrique@gmail.com',
@@ -50,12 +59,12 @@ const realizarLogin = async () => {
 </script>
 
 <template>
-  <div class="columns is-centered is-vcentered" style="height: 100vh">
-    <div class="column is-4">
-      <div class="box">
+  <div class="columns is-vcentered is-centered" style="height: 100vh">
+    <!-- Coluna Login -->
+    <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
+      <div class="box" style="width: 100%; max-width: 400px">
         <h1 class="title has-text-centered">Login de Usuário</h1>
 
-        <!-- Erros gerais -->
         <div v-if="erros.geral.length" class="notification is-danger">
           <ErroMensagemValidacaoForm :erros="erros.geral" />
         </div>
@@ -103,9 +112,14 @@ const realizarLogin = async () => {
         </form>
       </div>
     </div>
+
+    <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
+      <div v-if="leituraStore.estaCarregando">
+        <Carregando />
+      </div>
+      <div v-else>
+        <LeituraAleatoria :leitura="leituraStore.leituraAleatoria" />
+      </div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-/* Apenas ajustes leves adicionais */
-</style>

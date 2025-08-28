@@ -1,22 +1,17 @@
 <script setup>
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
 
 const props = defineProps({
   modelValue: Object,
   options: Array,
 })
 
-const emit = defineEmits(['update:modelValue', 'campoEdiotra'])
-
-function adicionarNovaEditora(nome) {
-  emit('campoEdiotra', nome)
-}
+const emit = defineEmits(['update:modelValue', 'campoEditora'])
 </script>
 
 <template>
   <div class="field">
-    <label class="label" for="">Ediora</label>
+    <label class="label" for="">Editora</label>
     <div class="control">
       <v-select
         :model-value="props.modelValue"
@@ -25,7 +20,7 @@ function adicionarNovaEditora(nome) {
         :reduce="(editora) => editora"
         taggable
         @update:modelValue="emit('update:modelValue', $event)"
-        @new="adicionarNovaEditora"
+        @new=""
         class="is-fullwidth"
       />
     </div>
