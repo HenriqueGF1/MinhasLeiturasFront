@@ -12,7 +12,9 @@ export const useAvaliacoesStore = defineStore('avaliacao', {
     async fetchAvaliacoes() {
       this.estaCarregandoAvaliacao = true
       try {
-        const response = await api.get('/leituras/avaliar/pesquisa')
+        const response = await api.get('/avaliacoes')
+        console.log('avaliacoes ', response)
+        console.log('avaliacoes ', response.data.data)
         this.avaliacoes = response.data.data
       } catch (error) {
         console.error('Erro ao carregar avaliacoes:', error)
@@ -24,7 +26,7 @@ export const useAvaliacoesStore = defineStore('avaliacao', {
     async deleteAvaliacaoLeitura(id_avaliacao_leitura) {
       // this.estaCarregando = true
       try {
-        await api.delete(`/leituras/avaliar/deletar/${id_avaliacao_leitura}`)
+        await api.delete(`/avaliacoes/${id_avaliacao_leitura}`)
         await this.fetchAvaliacoes()
       } catch (error) {
         console.error('Erro ao excluir avaliação leitura:', error)

@@ -12,7 +12,7 @@ export const useProgressoStore = defineStore('progresso', {
     async fetchProgressoTotal(data) {
       this.estaCarregando = true
       try {
-        const resposta = await api.post(`/leituras/progresso/total`, data)
+        const resposta = await api.post(`/progresso/total`, data)
         this.progressoTotal = resposta.data
       } catch (error) {
         console.error('Erro ao carregar progresso total:', error)

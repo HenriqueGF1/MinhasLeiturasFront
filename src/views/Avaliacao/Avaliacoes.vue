@@ -29,7 +29,7 @@ onMounted(() => {
           >
             <AvaliacoesCard
               :avaliacao="avaliacao"
-              :leitura="avaliacao.leituras[0]"
+              :leitura="avaliacao.leitura"
               @deletarAvaliacaoLeitura="
                 () => avaliacoesStore.deleteAvaliacaoLeitura(avaliacao.id_avaliacao_leitura)
               "

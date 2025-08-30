@@ -36,7 +36,7 @@ export const useLeituraStore = defineStore('leitura', {
     async fetchLeiturasUsuario() {
       this.estaCarregando = true
       try {
-        const response = await api.get('/leituras/usuario')
+        const response = await api.get('/usuario-leitura')
         console.log('Leituras do Usuario ', response)
         this.leiturasUsuario = response.data.data
       } catch (error) {
@@ -48,7 +48,7 @@ export const useLeituraStore = defineStore('leitura', {
     async cadastrar(data) {
       this.estaCarregando = true
       try {
-        const resposta = await api.post(`/leituras/cadastrar`, data)
+        const resposta = await api.post(`/leituras`, data)
         return resposta.data
       } catch (error) {
         this.erros = error?.response?.data?.errors ?? []
@@ -61,7 +61,7 @@ export const useLeituraStore = defineStore('leitura', {
       // this.estaCarregando = true
       console.log('Id que eu vou excluir ', id_usuario_leitura)
       try {
-        await api.delete(`/leituras/excluir/${id_usuario_leitura}`)
+        await api.delete(`/usuario-leitura/${id_usuario_leitura}`)
         await this.fetchLeiturasUsuario()
       } catch (error) {
         console.error('Erro ao excluir leitura:', error)
@@ -71,7 +71,7 @@ export const useLeituraStore = defineStore('leitura', {
     },
     async progresso(data) {
       try {
-        const resposta = await api.post(`/leituras/progresso`, data)
+        const resposta = await api.post(`/progresso`, data)
         return resposta.data
       } catch (error) {
         this.erros = error?.response?.data?.errors ?? []
@@ -80,7 +80,7 @@ export const useLeituraStore = defineStore('leitura', {
     },
     async avaliacao(data) {
       try {
-        const resposta = await api.post(`/leituras/avaliar`, data)
+        const resposta = await api.post(`/avaliacoes`, data)
         return resposta.data
       } catch (error) {
         this.erros = error?.response?.data?.errors ?? []

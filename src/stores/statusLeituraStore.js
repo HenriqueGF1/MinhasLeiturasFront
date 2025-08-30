@@ -13,8 +13,8 @@ export const useStatusLeituraStore = defineStore('statusLeitura', {
       this.estaCarregandoStatusLeitura = true
       try {
         const response = await api.get('/status/leituras')
-        console.log('Status Store Retorno', response.data)
-        this.statusLeitura = response.data
+        console.log('Status Store Retorno', response.data.data)
+        this.statusLeitura = response.data.data
       } catch (error) {
         console.error('Erro ao carregar status:', error)
         this.erros = error?.response?.data?.errors ?? []
