@@ -1,10 +1,13 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import api from '../../api/instanceAxios'
-import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
-import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+import { onMounted, reactive, ref } from 'vue'
+
 import { useLeituraStore } from '@/stores/leituraStore'
+
+import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+
+import api from '../../api/instanceAxios'
 import Carregando from '../../components/Carregando.vue'
+import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
 
 const leituraStore = useLeituraStore()
 

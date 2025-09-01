@@ -1,10 +1,11 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
-import ErroMensagemValidacaoForm from '../ErroMensagemValidacaoForm.vue'
+import { computed, reactive, ref } from 'vue'
+
 import { useLeituraStore } from '@/stores/leituraStore'
 import { useProgressoStore } from '@/stores/progressoStore'
 
-const leituraStore = useLeituraStore()
+import ErroMensagemValidacaoForm from '../ErroMensagemValidacaoForm.vue'
+
 const progressoStore = useProgressoStore()
 
 const isActive = ref(false)
@@ -19,7 +20,6 @@ const props = defineProps({
 
 // Estado do formulário
 const progressoLeitura = reactive({
-  id_usuario: 1,
   id_leitura: props.id_leitura,
   qtd_paginas_lidas: null,
   data_leitura: null,
@@ -63,19 +63,20 @@ function resetForm() {
 
 // Função para salvar o progresso
 async function salvar() {
-  if (!progressoLeitura.qtd_paginas_lidas || !progressoLeitura.data_leitura) return
-
-  const payload = {
+  const dados = {
     ...progressoLeitura,
     qtd_paginas_lidas: qtdPaginasParaSalvar.value,
-    data_leitura: progressoLeitura.data_leitura.replace('T', ' ') + ':00',
   }
 
   resetErros()
-  const response = await leituraStore.progresso(payload)
-  Object.assign(erros, leituraStore.erros)
+  const response = await progressoStore.progressoCadastrar(dados)
+  Object.assign(erros, progressoStore.erros)
+  console.log('Meuerros de procgfe', progressoStore.erros)
 
   if (response.success) {
+    const leituraStore = useLeituraStore()
+    leituraStore.fetchLeiturasUsuario()
+
     isActive.value = false
     resetForm()
   }
@@ -84,7 +85,6 @@ async function salvar() {
 // Função para buscar progresso do usuário
 async function buscarProgresso() {
   await progressoStore.fetchProgressoTotal({
-    id_usuario: 1,
     id_leitura: props.id_leitura,
   })
 
@@ -93,6 +93,8 @@ async function buscarProgresso() {
   } else {
     Object.assign(progressoTotal.value, progressoStore.progressoTotal)
   }
+
+  console.log('Meu progressoTotal ', progressoTotal)
 }
 
 // Abrir modal e buscar progresso
@@ -118,27 +120,12 @@ async function adicionarProgresso() {
         </header>
 
         <section class="modal-card-body">
-          <!-- Usuário -->
-          <div class="field">
-            <label class="label" for="id_usuario">Usuário</label>
-            <div class="control">
-              <input
-                id="id_usuario"
-                type="text"
-                v-model="progressoLeitura.id_usuario"
-                class="input"
-              />
-            </div>
-            <ErroMensagemValidacaoForm v-if="erros.id_usuario" :erros="erros.id_usuario" />
-          </div>
-
           <!-- Leitura -->
           <div class="field">
-            <label class="label" for="id_leitura">Leitura</label>
             <div class="control">
               <input
                 id="id_leitura"
-                type="text"
+                type="hidden"
                 v-model="progressoLeitura.id_leitura"
                 class="input"
               />
@@ -148,12 +135,14 @@ async function adicionarProgresso() {
 
           <!-- Número de páginas lidas -->
           <div class="field">
-            <label class="label">Escolha o número de páginas lidas</label>
+            <label class="label">Página que você parou a leitura.</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select v-model="progressoLeitura.qtd_paginas_lidas">
                   <option disabled value="">-- Selecione --</option>
-                  <option v-for="num in numeros" :key="num" :value="num">{{ num }}</option>
+                  <option v-for="num in numeros" :key="num" :value="num">
+                    {{ num }}
+                  </option>
                 </select>
               </div>
             </div>

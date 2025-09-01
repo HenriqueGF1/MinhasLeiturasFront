@@ -17,6 +17,11 @@ const descricaoCurta = computed(() => {
     ? props.leitura.descricao.slice(0, 200) + '...'
     : props.leitura.descricao
 })
+
+const formatarData = (data) => {
+  const d = new Date(data)
+  return d.toLocaleDateString('pt-BR') // → 01/09/2025
+}
 </script>
 
 <template>
@@ -39,8 +44,8 @@ const descricaoCurta = computed(() => {
         </div>
 
         <small class="has-text-grey">
-          📅 Publicado: {{ leitura.data_publicacao }} | 📚 {{ leitura.qtd_paginas }} páginas | 📖
-          {{ leitura.qtd_capitulos }} capítulos
+          📅 Publicado: {{ formatarData(leitura.data_publicacao) }} | 📚
+          {{ leitura.qtd_paginas }} páginas | 📖 {{ leitura.qtd_capitulos }} capítulos
         </small>
       </div>
     </div>

@@ -1,9 +1,12 @@
 <script setup>
-import { ref, reactive } from 'vue'
-import ErroMensagemValidacaoForm from '../ErroMensagemValidacaoForm.vue'
+import { reactive, ref } from 'vue'
+
+import { useAvaliacoesStore } from '@/stores/avaliacoesStore'
 import { useLeituraStore } from '@/stores/leituraStore'
 
-const leituraStore = useLeituraStore()
+import ErroMensagemValidacaoForm from '../ErroMensagemValidacaoForm.vue'
+
+const avaliacoesStore = useAvaliacoesStore()
 
 const isActive = ref(false)
 
@@ -16,7 +19,6 @@ const props = defineProps({
 })
 
 const avaliacao = reactive({
-  id_usuario: null,
   id_leitura: props.id_leitura,
   nota: 10,
   descricao_avaliacao: 'Otima',
@@ -29,15 +31,18 @@ const novosErros = reactive({})
 async function salvar() {
   Object.assign(novosErros, {})
 
-  const response = await leituraStore.avaliacao(avaliacao)
+  const response = await avaliacoesStore.avaliar(avaliacao)
 
-  Object.assign(novosErros, leituraStore.erros)
+  Object.assign(novosErros, avaliacoesStore.erros)
 
   console.log('Response ', response)
 
   if (!response.success) {
     return
   }
+
+  const leituraStore = useLeituraStore()
+  leituraStore.fetchLeiturasUsuario()
 
   isActive.value = false
 }
@@ -58,19 +63,8 @@ async function salvar() {
 
         <section class="modal-card-body">
           <div class="field">
-            <label class="label" for="id_usuario">Usuário</label>
             <div class="control">
-              <input id="id_usuario" type="text" v-model="avaliacao.id_usuario" class="input" />
-            </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.id_usuario" />
-            </p>
-          </div>
-
-          <div class="field">
-            <label class="label" for="id_leitura">Leitura</label>
-            <div class="control">
-              <input id="id_leitura" type="text" v-model="avaliacao.id_leitura" class="input" />
+              <input id="id_leitura" type="hidden" v-model="avaliacao.id_leitura" class="input" />
             </div>
             <p v-if="Object.keys(novosErros).length">
               <ErroMensagemValidacaoForm :erros="novosErros.id_leitura" />

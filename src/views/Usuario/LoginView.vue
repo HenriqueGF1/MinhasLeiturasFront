@@ -1,12 +1,19 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import api from '../../api/instanceAxios'
-import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
-import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+import { onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
 import { useLeituraStore } from '@/stores/leituraStore'
+import { useUsuarioStore } from '@/stores/usuarioStore'
+
+import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
+
 import Carregando from '../../components/Carregando.vue'
+import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
+
+const router = useRouter()
 
 const leituraStore = useLeituraStore()
+const usuarioStore = useUsuarioStore()
 
 onMounted(() => {
   leituraStore.fetchLeituraAleatoria()
@@ -14,47 +21,26 @@ onMounted(() => {
 
 const usuario = reactive({
   email: 'Henrique@gmail.com',
+  // email: 'H',
   password: '12345678',
 })
 
-const erros = reactive({
-  geral: [],
-  email: [],
-  password: [],
-})
-
-const carregar = ref(false)
+const novosErros = reactive({})
 
 const realizarLogin = async () => {
-  carregar.value = true
-  erros.geral = []
-  erros.email = []
-  erros.password = []
+  Object.assign(novosErros, {})
 
-  try {
-    const response = await api.post('/usuario/login', {
-      email: usuario.email,
-      password: usuario.password,
-    })
+  const response = await usuarioStore.login(usuario)
 
-    const token = response.data.authorisation.token
-    localStorage.setItem('token', token)
-    console.log('Login bem-sucedido:', response)
-  } catch (error) {
-    console.error('Erro no login:', error)
+  Object.assign(novosErros, usuarioStore.erros)
 
-    if (error.response?.status === 500) {
-      erros.geral.push('Erro. Tente novamente mais tarde.')
-    } else if (error.response?.data?.errors) {
-      const dataErrors = error.response.data.errors
-      erros.email = dataErrors.email ?? []
-      erros.password = dataErrors.password ?? []
-    } else {
-      erros.geral.push('Ocorreu um erro inesperado.')
-    }
-  } finally {
-    carregar.value = false
+  console.log('Response ', response)
+
+  if (response.code != 200) {
+    return
   }
+
+  router.push({ name: 'leituras' })
 }
 </script>
 
@@ -65,47 +51,39 @@ const realizarLogin = async () => {
       <div class="box" style="width: 100%; max-width: 400px">
         <h1 class="title has-text-centered">Login de Usuário</h1>
 
-        <div v-if="erros.geral.length" class="notification is-danger">
-          <ErroMensagemValidacaoForm :erros="erros.geral" />
-        </div>
+        <!-- <div v-if="Object.keys(novosErros).length" class="notification is-danger">
+          <ErroMensagemValidacaoForm :erros="novosErros" />
+        </div> -->
 
         <form @submit.prevent="realizarLogin">
           <div class="field">
             <label class="label" for="email">Email</label>
             <div class="control">
-              <input
-                id="email"
-                type="text"
-                v-model="usuario.email"
-                class="input"
-                :class="{ 'is-danger': erros.email.length }"
-              />
+              <input id="email" type="text" v-model="usuario.email" class="input" />
             </div>
-            <p v-if="erros.email.length">
-              <ErroMensagemValidacaoForm :erros="erros.email" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.email" />
             </p>
           </div>
 
           <div class="field">
             <label class="label" for="password">Senha</label>
             <div class="control">
-              <input
-                id="password"
-                type="password"
-                v-model="usuario.password"
-                class="input"
-                :class="{ 'is-danger': erros.password.length }"
-              />
+              <input id="password" type="password" v-model="usuario.password" class="input" />
             </div>
-            <p v-if="erros.password.length">
-              <ErroMensagemValidacaoForm :erros="erros.password" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.password" />
             </p>
           </div>
 
           <div class="field">
             <div class="control">
-              <button type="submit" class="button is-primary is-fullwidth" :disabled="carregar">
-                {{ carregar ? 'Enviando...' : 'Enviar' }}
+              <button
+                type="submit"
+                class="button is-primary is-fullwidth"
+                :disabled="usuarioStore.estaCarregandoUsuario"
+              >
+                {{ usuarioStore.estaCarregandoUsuario ? 'Enviando...' : 'Enviar' }}
               </button>
             </div>
           </div>

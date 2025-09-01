@@ -1,5 +1,6 @@
 // stores/leituraStore.js
 import { defineStore } from 'pinia'
+
 import api from '../api/instanceAxios'
 
 export const useLeituraStore = defineStore('leitura', {
@@ -67,24 +68,6 @@ export const useLeituraStore = defineStore('leitura', {
         console.error('Erro ao excluir leitura:', error)
       } finally {
         // this.estaCarregando = false
-      }
-    },
-    async progresso(data) {
-      try {
-        const resposta = await api.post(`/progresso`, data)
-        return resposta.data
-      } catch (error) {
-        this.erros = error?.response?.data?.errors ?? []
-        return error.response
-      }
-    },
-    async avaliacao(data) {
-      try {
-        const resposta = await api.post(`/avaliacoes`, data)
-        return resposta.data
-      } catch (error) {
-        this.erros = error?.response?.data?.errors ?? []
-        return error.response
       }
     },
   },

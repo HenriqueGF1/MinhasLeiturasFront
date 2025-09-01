@@ -1,8 +1,10 @@
 <script setup>
 import { onMounted } from 'vue'
+
 import { useAvaliacoesStore } from '@/stores/avaliacoesStore'
-import Carregando from '../../components/Carregando.vue'
+
 import AvaliacoesCard from '../../components/Avaliacao/AvaliacoesCard.vue'
+import Carregando from '../../components/Carregando.vue'
 
 const avaliacoesStore = useAvaliacoesStore()
 

@@ -1,8 +1,10 @@
 <script setup>
 import { onMounted } from 'vue'
+
 import { useLeituraStore } from '@/stores/leituraStore'
-import LeituraCard from '../../components/Leitura/LeituraCard.vue'
+
 import Carregando from '../../components/Carregando.vue'
+import LeituraCard from '../../components/Leitura/LeituraCard.vue'
 
 const leituraStore = useLeituraStore()
 

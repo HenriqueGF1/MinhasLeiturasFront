@@ -1,6 +1,6 @@
 <script setup>
-import vSelect from 'vue-select'
 import { ref, watch } from 'vue'
+import vSelect from 'vue-select'
 
 const props = defineProps({
   modelValue: Array,

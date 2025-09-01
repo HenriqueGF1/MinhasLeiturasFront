@@ -1,20 +1,21 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
-import AutorSelect from '../../components/Autor/Select.vue'
-import EditoraSelect from '../../components/Editora/Select.vue'
-import GenerosSelect from '../../components/Generos/Select.vue'
-import StatusLeiturasSelect from '../../components/StatusLeituras/Select.vue'
-import Carregando from '../../components/Carregando.vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
-
-import { useLeituraStore } from '@/stores/leituraStore'
-import { useGeneroLeituraStore } from '@/stores/generoLeituraStore'
 import { useAutoresStore } from '@/stores/autoresStore'
 import { useEditorasStore } from '@/stores/editorasStore'
+import { useGeneroLeituraStore } from '@/stores/generoLeituraStore'
+import { useLeituraStore } from '@/stores/leituraStore'
 import { useStatusLeituraStore } from '@/stores/statusLeituraStore'
+
+import AutorSelect from '../../components/Autor/Select.vue'
+import Carregando from '../../components/Carregando.vue'
+import EditoraSelect from '../../components/Editora/Select.vue'
+import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
+import GenerosSelect from '../../components/Generos/Select.vue'
+import StatusLeiturasSelect from '../../components/StatusLeituras/Select.vue'
+
+const router = useRouter()
 
 const leituraStore = useLeituraStore()
 const generoStore = useGeneroLeituraStore()
@@ -36,7 +37,6 @@ const leitura = reactive({
   qtd_paginas: '',
   isbn: '',
   data_registro: new Date().toISOString(),
-  id_usuario: 1,
   id_status_leitura: null,
   id_genero: [],
 })
