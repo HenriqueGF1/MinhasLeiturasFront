@@ -2,14 +2,17 @@
 import { onMounted } from 'vue'
 
 import { useLeituraStore } from '@/stores/leituraStore'
+import { useStatusLeituraStore } from '@/stores/statusLeituraStore'
 
 import Carregando from '../../components/Carregando.vue'
 import LeituraCard from '../../components/Leitura/LeituraCard.vue'
 
 const leituraStore = useLeituraStore()
+const statusLeituraStore = useStatusLeituraStore()
 
 onMounted(() => {
   leituraStore.fetchLeituras()
+  statusLeituraStore.fetchStatusLeitura()
 })
 </script>
 

@@ -29,7 +29,7 @@ watch(localValue, (novo) => {
 
 <template>
   <div class="field">
-    <label class="label">Status Leitura</label>
+    <label class="label" for="">Status Leitura</label>
     <div class="control">
       <v-select
         v-model="localValue"

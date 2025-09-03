@@ -1,3 +1,5 @@
+import router from '@/router'
+import { useUsuarioStore } from '@/stores/usuarioStore'
 import axios from 'axios'
 
 const api = axios.create({
@@ -5,6 +7,7 @@ const api = axios.create({
   timeout: 10000,
 })
 
+// Interceptor de request → injeta token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -14,6 +17,20 @@ api.interceptors.request.use(
     return config
   },
   (error) => Promise.reject(error),
+)
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      const usuarioStore = useUsuarioStore()
+      usuarioStore.logado = false
+      router.push({ name: 'login' })
+    }
+
+    return Promise.reject(error)
+  },
 )
 
 export default api

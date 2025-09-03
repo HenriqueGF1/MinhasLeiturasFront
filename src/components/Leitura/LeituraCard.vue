@@ -2,6 +2,14 @@
 <script setup>
 import { computed } from 'vue'
 
+import { useStatusLeituraStore } from '@/stores/statusLeituraStore'
+import { useUsuarioStore } from '@/stores/usuarioStore'
+
+import UsuarioCadastroLeitura from '../../components/Leitura/UsuarioCadastroLeitura.vue'
+
+const usuarioStore = useUsuarioStore()
+const statusLeituraStore = useStatusLeituraStore()
+
 const props = defineProps({
   leitura: {
     type: Object,
@@ -48,8 +56,12 @@ const formatarData = (data) => {
     </div>
 
     <footer class="card-footer">
-      <!-- <a href="#" class="card-footer-item">Detalhes</a> -->
-      <!-- <a href="#" class="card-footer-item">Comprar</a> -->
+      <div v-if="usuarioStore.logado && leitura.usuario_tem_leitura == false">
+        <UsuarioCadastroLeitura
+          :id_leitura="leitura.id_leitura"
+          :statusDeLeitura="statusLeituraStore.statusLeitura"
+        />
+      </div>
     </footer>
   </div>
 </template>

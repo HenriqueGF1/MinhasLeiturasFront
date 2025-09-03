@@ -8,7 +8,7 @@ export const useUsuarioStore = defineStore('usuario', {
     usaurio: [],
     estaCarregandoUsuario: false,
     erros: [],
-    logado: !!localStorage.getItem('token'), // inicializa baseado no token
+    logado: !!localStorage.getItem('token'),
   }),
   actions: {
     async logout() {

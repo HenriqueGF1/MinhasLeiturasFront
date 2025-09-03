@@ -35,7 +35,7 @@ const leitura = reactive({
   data_publicacao: '',
   qtd_capitulos: '',
   qtd_paginas: '',
-  isbn: '',
+  isbn: '978057507900',
   data_registro: new Date().toISOString(),
   id_status_leitura: null,
   id_genero: [],
@@ -111,6 +111,32 @@ watch(generosSelecionados, (novos) => {
   leitura.id_genero = lista.map((g) => g.id_genero).filter(Boolean)
 })
 
+const pesquisarIsbn = async () => {
+  if (!leitura.isbn || leitura.isbn.length < 13) return
+
+  try {
+    const response = await leituraStore.pesquisarIsbn(leitura.isbn)
+    console.log('📚 Resposta Tela pesquisar ISBN:', response)
+
+    if (!response) return
+
+    const { titulo, descricao, qtd_paginas, qtd_capitulos, data_publicacao, capa, nome_autor } =
+      response
+
+    Object.assign(leitura, {
+      titulo: titulo || '',
+      descricao: descricao || '',
+      qtd_paginas: qtd_paginas || 0,
+      qtd_capitulos: qtd_capitulos || 0,
+      data_publicacao: data_publicacao || '',
+      capa: capa || '',
+      nome_autor: nome_autor || '',
+    })
+  } catch (error) {
+    console.error('❌ Erro ao pesquisar ISBN:', error)
+  }
+}
+
 const cadastrarLeitura = async () => {
   Object.assign(novosErros, {})
   console.log('Dados que serão enviados:', leitura)
@@ -128,6 +154,11 @@ const cadastrarLeitura = async () => {
     <div class="column is-6">
       <div class="box">
         <h1 class="title has-text-centered">Cadastrar Leitura</h1>
+
+        <!-- Enquanto estiver carregando -->
+        <div v-if="leituraStore.estaCarregandoIsbn">
+          <Carregando />
+        </div>
 
         <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
           <ErroMensagemValidacaoForm :erros="novosErros" />
@@ -176,7 +207,13 @@ const cadastrarLeitura = async () => {
               <div class="field">
                 <label class="label" for="isbn">ISBN</label>
                 <div class="control">
-                  <input id="isbn" type="text" v-model="leitura.isbn" class="input" />
+                  <input
+                    id="isbn"
+                    type="text"
+                    v-model="leitura.isbn"
+                    class="input"
+                    @blur="pesquisarIsbn"
+                  />
                 </div>
                 <ErroMensagemValidacaoForm v-if="novosErros.isbn" :erros="novosErros.isbn" />
               </div>
