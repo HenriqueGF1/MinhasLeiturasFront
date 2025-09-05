@@ -50,7 +50,6 @@ const cadastrarUsuario = async () => {
 
     const token = response.data.authorisation.token
     localStorage.setItem('auth_token', token)
-    console.log('Cadastro bem-sucedido:', response)
   } catch (error) {
     if (error.response?.status === 500) {
       erros.geral = ['Erro. Tente novamente mais tarde.']

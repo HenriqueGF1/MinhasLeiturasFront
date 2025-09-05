@@ -14,11 +14,8 @@ export const useAvaliacoesStore = defineStore('avaliacao', {
       this.estaCarregandoAvaliacao = true
       try {
         const response = await api.get('/avaliacoes')
-        console.log('avaliacoes ', response)
-        console.log('avaliacoes ', response.data.data)
         this.avaliacoes = response.data.data
       } catch (error) {
-        console.error('Erro ao carregar avaliacoes:', error)
         this.erros = error?.response?.data?.errors ?? []
       } finally {
         this.estaCarregandoAvaliacao = false
@@ -28,7 +25,6 @@ export const useAvaliacoesStore = defineStore('avaliacao', {
       // this.estaCarregandoAvaliacao = true
       try {
         const resposta = await api.post(`/avaliacoes`, data)
-        console.log('Minha resposta ', resposta)
         return resposta.data
       } catch (error) {
         this.erros = error?.response?.data?.errors ?? []

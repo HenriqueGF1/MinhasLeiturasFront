@@ -19,9 +19,6 @@ export const useLeituraStore = defineStore('leitura', {
         const response01 = await api.get(`/leituras/isbn/${isbn}`)
         const dados01 = response01?.data?.data || null
 
-        console.log('A ', dados01)
-        console.log('B ', dados01.length)
-
         if (Array.isArray(dados01) ? dados01.length > 0 : !!dados01) {
           const livro = {
             id_leitura: dados01.id_leitura || '',
@@ -37,7 +34,6 @@ export const useLeituraStore = defineStore('leitura', {
             id_genero: dados01.id_genero || '',
           }
 
-          console.log('📚 Livro encontrado no banco local:', livro)
           return livro
         }
 
@@ -56,7 +52,6 @@ export const useLeituraStore = defineStore('leitura', {
           id_genero: '',
         }
 
-        console.log('📚 Livro encontrado na API externa:', livro)
         return livro
       } catch (error) {
         console.error('❌ Erro ao carregar leituras:', error?.response?.data || error.message)
@@ -91,7 +86,6 @@ export const useLeituraStore = defineStore('leitura', {
       this.estaCarregando = true
       try {
         const response = await api.get('/usuario-leitura')
-        console.log('Leituras do Usuario ', response)
         this.leiturasUsuario = response.data.data
       } catch (error) {
         console.error('Erro ao carregar leituras do usuario:', error)
@@ -125,7 +119,6 @@ export const useLeituraStore = defineStore('leitura', {
     },
     async deleteLeitura(id_usuario_leitura) {
       // this.estaCarregando = true
-      console.log('Id que eu vou excluir ', id_usuario_leitura)
       try {
         await api.delete(`/usuario-leitura/${id_usuario_leitura}`)
         await this.fetchLeiturasUsuario()

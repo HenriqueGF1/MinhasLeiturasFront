@@ -42,14 +42,12 @@ async function usuarioCadastrarLeituraExistente() {
     const response = await leituraStore.usuarioCadastrarLeituraExistente(dados)
     errosForm.value = leituraStore.erros
 
-    console.log('📚 Response usuárioCadastrarLeituraExistente:', response)
-
     if (!response?.success) return
 
     await leituraStore.fetchLeituras()
     isActive.value = false
   } catch (error) {
-    console.error('❌ Erro ao cadastrar leitura existente:', error)
+    isActive.value = true
   }
 }
 </script>

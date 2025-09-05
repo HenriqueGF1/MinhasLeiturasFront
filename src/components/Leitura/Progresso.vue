@@ -71,7 +71,6 @@ async function salvar() {
   resetErros()
   const response = await progressoStore.progressoCadastrar(dados)
   Object.assign(erros, progressoStore.erros)
-  console.log('Meuerros de procgfe', progressoStore.erros)
 
   if (response.success) {
     const leituraStore = useLeituraStore()
@@ -93,8 +92,6 @@ async function buscarProgresso() {
   } else {
     Object.assign(progressoTotal.value, progressoStore.progressoTotal)
   }
-
-  console.log('Meu progressoTotal ', progressoTotal)
 }
 
 // Abrir modal e buscar progresso

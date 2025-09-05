@@ -19,9 +19,6 @@ const isLogado = computed(() => usuarioStore.logado)
 
 const logout = async () => {
   const response = await usuarioStore.logout()
-
-  console.log('Response ', response)
-
   if (response.code != 200) {
     return
   }

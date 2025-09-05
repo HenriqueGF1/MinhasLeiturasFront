@@ -28,6 +28,7 @@ const leitura = reactive({
   titulo: '',
   descricao: '',
   capa: '',
+  capa_arquivo: '',
   id_editora: null,
   descricao_editora: '',
   id_autor: null,
@@ -116,7 +117,6 @@ const pesquisarIsbn = async () => {
 
   try {
     const response = await leituraStore.pesquisarIsbn(leitura.isbn)
-    console.log('📚 Resposta Tela pesquisar ISBN:', response)
 
     if (!response) return
 
@@ -132,6 +132,8 @@ const pesquisarIsbn = async () => {
       capa: capa || '',
       nome_autor: nome_autor || '',
     })
+
+    controleCamposCapa()
   } catch (error) {
     console.error('❌ Erro ao pesquisar ISBN:', error)
   }
@@ -139,13 +141,40 @@ const pesquisarIsbn = async () => {
 
 const cadastrarLeitura = async () => {
   Object.assign(novosErros, {})
-  console.log('Dados que serão enviados:', leitura)
   const response = await leituraStore.cadastrar(leitura)
-  console.log('Meu resultado ', response)
   Object.assign(novosErros, leituraStore.erros)
   if (!response.success) return
 
   router.push({ name: 'usuario-leituras' })
+}
+
+const controleCamposCapa = () => {
+  const fileInput = document.querySelector('#file-js-example input[type=file]')
+  const fileName = document.querySelector('#file-js-example .file-name')
+  const imagemPreview = document.querySelector('#imagemPreview')
+  const capaArquivo = document.querySelector('#capaArquivo')
+  const capaUrl = document.querySelector('#capaUrl')
+  const imagemPreviewDiv = document.querySelector('#imagemPreviewDiv')
+
+  capaArquivo.disabled = false
+  capaUrl.disabled = false
+
+  imagemPreviewDiv.style.display = 'block'
+
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0]
+    fileName.textContent = file.name
+    imagemPreview.src = URL.createObjectURL(file)
+
+    leitura.capa = ''
+    leitura.capa_arquivo = file
+    capaUrl.disabled = true
+  } else {
+    imagemPreview.src = leitura.capa
+    capaArquivo.disabled = true
+    leitura.capa_arquivo = ''
+    fileName.textContent = ''
+  }
 }
 </script>
 
@@ -266,28 +295,49 @@ const cadastrarLeitura = async () => {
                 </div>
               </div>
             </div>
-
-            <!-- <div class="column">
-              <div class="field">
-                <label class="label" for="data_registro">Registro</label>
-                <div class="control">
-                  <input
-                    id="data_registro"
-                    type="date"
-                    v-model="leitura.data_registro"
-                    class="input"
-                  />
-                </div>
-              </div>
-            </div> -->
           </div>
 
-          <!-- Linha 5: Capa -->
           <div class="field">
-            <label class="label" for="capa">URL da Capa</label>
+            <label class="label" for="capa">Capa (Url)</label>
             <div class="control">
-              <input id="capa" type="text" v-model="leitura.capa" class="input" />
+              <input
+                id="capaUrl"
+                type="text"
+                v-model="leitura.capa"
+                class="input"
+                @change="controleCamposCapa"
+              />
             </div>
+          </div>
+
+          <div id="file-js-example" class="file has-name">
+            <label class="file-label">
+              <input
+                id="capaArquivo"
+                class="file-input"
+                type="file"
+                name="resume"
+                @change="controleCamposCapa"
+              />
+
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">Capa (Arquivo)</span>
+              </span>
+
+              <span class="file-name">Sem Arquivo</span>
+            </label>
+          </div>
+
+          <div class="field" id="imagemPreviewDiv" style="display: none">
+            <img
+              id="imagemPreview"
+              src=""
+              alt="Pré-visualização da imagem"
+              style="max-width: 200px; margin-top: 10px"
+            />
           </div>
 
           <!-- Linha 6: Descrição -->
@@ -345,3 +395,5 @@ const cadastrarLeitura = async () => {
     </div>
   </div>
 </template>
+
+<style></style>

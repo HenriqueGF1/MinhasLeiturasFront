@@ -35,8 +35,6 @@ async function salvar() {
 
   Object.assign(novosErros, avaliacoesStore.erros)
 
-  console.log('Response ', response)
-
   if (!response.success) {
     return
   }

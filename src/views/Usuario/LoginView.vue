@@ -34,8 +34,6 @@ const realizarLogin = async () => {
 
   Object.assign(novosErros, usuarioStore.erros)
 
-  console.log('Response ', response)
-
   if (response.code != 200) {
     return
   }
