@@ -48,74 +48,95 @@ async function salvar() {
 
 <template>
   <div>
-    <button class="button is-primary is-fullwidth" @click="isActive = true">Avaliar</button>
+    <!-- Botão de abrir modal -->
+    <button @click="isActive = true" class="button is-primary is-small">Avaliar</button>
 
+    <!-- Modal -->
     <div class="modal" :class="{ 'is-active': isActive }">
       <div class="modal-background" @click="isActive = false"></div>
 
       <div class="modal-card">
+        <!-- Cabeçalho -->
         <header class="modal-card-head">
-          <p class="modal-card-title">Formulário</p>
+          <p class="modal-card-title">Avaliação</p>
           <button class="delete" aria-label="close" @click="isActive = false"></button>
         </header>
 
+        <!-- Corpo -->
         <section class="modal-card-body">
-          <div class="field">
-            <div class="control">
-              <input id="id_leitura" type="hidden" v-model="avaliacao.id_leitura" class="input" />
-            </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.id_leitura" />
-            </p>
-          </div>
-
+          <!-- Nota -->
           <div class="field">
             <label class="label" for="nota">Nota</label>
             <div class="control">
-              <input id="nota" type="text" v-model="avaliacao.nota" class="input" />
+              <input
+                id="nota"
+                type="number"
+                min="0"
+                max="10"
+                v-model="avaliacao.nota"
+                class="input"
+              />
             </div>
-            <p v-if="Object.keys(novosErros).length">
+            <p v-if="novosErros?.nota">
               <ErroMensagemValidacaoForm :erros="novosErros.nota" />
             </p>
           </div>
 
+          <!-- Descrição -->
           <div class="field">
-            <label class="label" for="descricao_avaliacao">Descrição Avaliação</label>
+            <label class="label" for="descricao_avaliacao">Descrição</label>
             <div class="control">
-              <input
+              <textarea
                 id="descricao_avaliacao"
-                type="text"
                 v-model="avaliacao.descricao_avaliacao"
-                class="input"
-              />
+                class="textarea"
+                placeholder="Escreva sua avaliação..."
+              ></textarea>
             </div>
-            <p v-if="Object.keys(novosErros).length">
+            <p v-if="novosErros?.descricao_avaliacao">
               <ErroMensagemValidacaoForm :erros="novosErros.descricao_avaliacao" />
             </p>
           </div>
 
-          <div class="field">
-            <label class="label" for="data_inicio">Data Inicio</label>
-            <div class="control">
-              <input id="data_inicio" type="date" v-model="avaliacao.data_inicio" class="input" />
-            </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.data_inicio" />
-            </p>
-          </div>
+          <!-- Data início -->
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <label class="label" for="data_inicio">Início</label>
+                <div class="control">
+                  <input
+                    id="data_inicio"
+                    type="date"
+                    v-model="avaliacao.data_inicio"
+                    class="input"
+                  />
+                </div>
+                <p v-if="novosErros?.data_inicio">
+                  <ErroMensagemValidacaoForm :erros="novosErros.data_inicio" />
+                </p>
+              </div>
 
-          <div class="field">
-            <label class="label" for="data_termino">Data Termino</label>
-            <div class="control">
-              <input id="data_termino" type="date" v-model="avaliacao.data_termino" class="input" />
+              <!-- Data término -->
+              <div class="field">
+                <label class="label" for="data_termino">Término</label>
+                <div class="control">
+                  <input
+                    id="data_termino"
+                    type="date"
+                    v-model="avaliacao.data_termino"
+                    class="input"
+                  />
+                </div>
+                <p v-if="novosErros?.data_termino">
+                  <ErroMensagemValidacaoForm :erros="novosErros.data_termino" />
+                </p>
+              </div>
             </div>
-            <p v-if="Object.keys(novosErros).length">
-              <ErroMensagemValidacaoForm :erros="novosErros.data_termino" />
-            </p>
           </div>
         </section>
 
-        <footer class="modal-card-foot">
+        <!-- Rodapé -->
+        <footer class="modal-card-foot is-justify-content-flex-end">
           <button class="button is-success" @click="salvar">Salvar</button>
           <button class="button" @click="isActive = false">Cancelar</button>
         </footer>
@@ -126,6 +147,22 @@ async function salvar() {
 
 <style>
 .modal-card {
-  max-width: 500px;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.modal-card-head,
+.modal-card-foot {
+  padding: 1rem 1.25rem;
+}
+
+.modal-card-body {
+  padding: 1.25rem;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 </style>

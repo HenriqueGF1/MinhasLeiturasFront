@@ -179,221 +179,230 @@ const controleCamposCapa = () => {
 </script>
 
 <template>
-  <div class="columns is-centered" style="min-height: 100vh; align-items: center">
-    <div class="column is-6">
-      <div class="box">
-        <h1 class="title has-text-centered">Cadastrar Leitura</h1>
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="box">
+            <h1 class="title has-text-centered mb-5">Cadastrar Leitura</h1>
 
-        <!-- Enquanto estiver carregando -->
-        <div v-if="leituraStore.estaCarregandoIsbn">
-          <Carregando />
-        </div>
+            <!-- Carregando ISBN -->
+            <div v-if="leituraStore.estaCarregandoIsbn" class="has-text-centered mb-4">
+              <Carregando />
+            </div>
 
-        <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
-          <ErroMensagemValidacaoForm :erros="novosErros" />
-        </div>
+            <!-- Erros do formulário -->
+            <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
+              <ErroMensagemValidacaoForm :erros="novosErros" />
+            </div>
 
-        <form @submit.prevent="cadastrarLeitura">
-          <!-- Linha 1: Título + Autor -->
-          <div class="columns">
-            <div class="column">
-              <div class="field">
-                <label class="label" for="titulo">Título</label>
-                <div class="control">
-                  <input id="titulo" type="text" v-model="leitura.titulo" class="input" />
+            <form @submit.prevent="cadastrarLeitura">
+              <!-- Linha 1: Título + Autor -->
+              <div class="columns is-multiline">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="titulo">Título</label>
+                    <div class="control">
+                      <input id="titulo" type="text" v-model="leitura.titulo" class="input" />
+                    </div>
+                    <ErroMensagemValidacaoForm
+                      v-if="novosErros.titulo"
+                      :erros="novosErros.titulo"
+                    />
+                  </div>
                 </div>
-                <ErroMensagemValidacaoForm v-if="novosErros.titulo" :erros="novosErros.titulo" />
-              </div>
-            </div>
 
-            <div class="column">
-              <div v-if="autoresStore.estaCarregandoAutores">
-                <Carregando />
+                <div class="column is-6">
+                  <div v-if="autoresStore.estaCarregandoAutores" class="has-text-centered">
+                    <Carregando />
+                  </div>
+                  <div v-else>
+                    <AutorSelect
+                      v-model="autorSelecionado"
+                      :options="autoresStore.autores"
+                      :taggable="true"
+                    />
+                  </div>
+                </div>
               </div>
-              <div v-else>
-                <AutorSelect
-                  v-model="autorSelecionado"
-                  :options="autoresStore.autores"
-                  :taggable="true"
-                  @new=""
-                />
-              </div>
-            </div>
-          </div>
 
-          <!-- Linha 2: Editora + ISBN -->
-          <div class="columns">
-            <div class="column">
-              <div v-if="editorasStore.estaCarregandoEditoras">
-                <Carregando />
-              </div>
-              <div v-else>
-                <EditoraSelect v-model="editoraSelecionado" :options="editorasStore.editoras" />
-              </div>
-            </div>
+              <!-- Linha 2: Editora + ISBN -->
+              <div class="columns is-multiline">
+                <div class="column is-6">
+                  <div v-if="editorasStore.estaCarregandoEditoras" class="has-text-centered">
+                    <Carregando />
+                  </div>
+                  <div v-else>
+                    <EditoraSelect v-model="editoraSelecionado" :options="editorasStore.editoras" />
+                  </div>
+                </div>
 
-            <div class="column">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="isbn">ISBN</label>
+                    <div class="control">
+                      <input
+                        id="isbn"
+                        type="text"
+                        v-model="leitura.isbn"
+                        class="input"
+                        @blur="pesquisarIsbn"
+                      />
+                    </div>
+                    <ErroMensagemValidacaoForm v-if="novosErros.isbn" :erros="novosErros.isbn" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Linha 3: Capítulos + Páginas -->
+              <div class="columns is-multiline">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="qtd_capitulos">Capítulos</label>
+                    <div class="control">
+                      <input
+                        id="qtd_capitulos"
+                        type="number"
+                        v-model="leitura.qtd_capitulos"
+                        class="input"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="qtd_paginas">Páginas</label>
+                    <div class="control">
+                      <input
+                        id="qtd_paginas"
+                        type="number"
+                        v-model="leitura.qtd_paginas"
+                        class="input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Linha 4: Data Publicação -->
+              <div class="columns">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="data_publicacao">Data Publicação</label>
+                    <div class="control">
+                      <input
+                        id="data_publicacao"
+                        type="date"
+                        v-model="leitura.data_publicacao"
+                        class="input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Linha 5: Capa URL e arquivo -->
               <div class="field">
-                <label class="label" for="isbn">ISBN</label>
+                <label class="label" for="capaUrl">Capa (URL)</label>
                 <div class="control">
                   <input
-                    id="isbn"
+                    id="capaUrl"
                     type="text"
-                    v-model="leitura.isbn"
+                    v-model="leitura.capa"
                     class="input"
-                    @blur="pesquisarIsbn"
+                    @change="controleCamposCapa"
                   />
                 </div>
-                <ErroMensagemValidacaoForm v-if="novosErros.isbn" :erros="novosErros.isbn" />
               </div>
-            </div>
-          </div>
 
-          <!-- Linha 3: Capítulos + Páginas -->
-          <div class="columns">
-            <div class="column">
-              <div class="field">
-                <label class="label" for="qtd_capitulos">Capítulos</label>
-                <div class="control">
+              <div id="file-js-example" class="file has-name mb-3">
+                <label class="file-label">
                   <input
-                    id="qtd_capitulos"
-                    type="number"
-                    v-model="leitura.qtd_capitulos"
-                    class="input"
+                    id="capaArquivo"
+                    class="file-input"
+                    type="file"
+                    name="resume"
+                    @change="controleCamposCapa"
                   />
-                </div>
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">Capa (Arquivo)</span>
+                  </span>
+                  <span class="file-name">Sem Arquivo</span>
+                </label>
               </div>
-            </div>
 
-            <div class="column">
-              <div class="field">
-                <label class="label" for="qtd_paginas">Páginas</label>
-                <div class="control">
-                  <input
-                    id="qtd_paginas"
-                    type="number"
-                    v-model="leitura.qtd_paginas"
-                    class="input"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Linha 4: Datas -->
-          <div class="columns">
-            <div class="column">
-              <div class="field">
-                <label class="label" for="data_publicacao">Data Publicação</label>
-                <div class="control">
-                  <input
-                    id="data_publicacao"
-                    type="date"
-                    v-model="leitura.data_publicacao"
-                    class="input"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label" for="capa">Capa (Url)</label>
-            <div class="control">
-              <input
-                id="capaUrl"
-                type="text"
-                v-model="leitura.capa"
-                class="input"
-                @change="controleCamposCapa"
-              />
-            </div>
-          </div>
-
-          <div id="file-js-example" class="file has-name">
-            <label class="file-label">
-              <input
-                id="capaArquivo"
-                class="file-input"
-                type="file"
-                name="resume"
-                @change="controleCamposCapa"
-              />
-
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
-                </span>
-                <span class="file-label">Capa (Arquivo)</span>
-              </span>
-
-              <span class="file-name">Sem Arquivo</span>
-            </label>
-          </div>
-
-          <div class="field" id="imagemPreviewDiv" style="display: none">
-            <img
-              id="imagemPreview"
-              src=""
-              alt="Pré-visualização da imagem"
-              style="max-width: 200px; margin-top: 10px"
-            />
-          </div>
-
-          <!-- Linha 6: Descrição -->
-          <div class="field">
-            <label class="label" for="descricao">Descrição</label>
-            <div class="control">
-              <textarea id="descricao" v-model="leitura.descricao" class="textarea"></textarea>
-            </div>
-          </div>
-
-          <!-- Linha 7: Status Leitura + Gêneros -->
-          <div class="columns">
-            <div class="column">
-              <div v-if="statusLeituraStore.estaCarregandoStatusLeitura">
-                <Carregando />
-              </div>
-              <div v-else>
-                <StatusLeiturasSelect
-                  v-model="statusLeituraSelecionado"
-                  :options="statusLeituraStore.statusLeitura"
-                  :creatable="false"
+              <div class="field" id="imagemPreviewDiv" v-show="imagemPreviewUrl">
+                <img
+                  id="imagemPreview"
+                  :src="imagemPreviewUrl"
+                  alt="Pré-visualização da imagem"
+                  class="image is-128x128"
                 />
               </div>
-            </div>
 
-            <div class="column">
-              <div v-if="generoStore.estaCarregandoGenero">
-                <Carregando />
+              <!-- Linha 6: Descrição -->
+              <div class="field">
+                <label class="label" for="descricao">Descrição</label>
+                <div class="control">
+                  <textarea id="descricao" v-model="leitura.descricao" class="textarea"></textarea>
+                </div>
               </div>
-              <div v-else>
-                <GenerosSelect
-                  v-model="generosSelecionados"
-                  :options="generoStore.generos"
-                  :creatable="false"
-                  multiple
-                />
-              </div>
-            </div>
-          </div>
 
-          <!-- Botão -->
-          <div class="field mt-4">
-            <div class="control">
-              <button
-                type="submit"
-                class="button is-primary is-fullwidth"
-                :disabled="leituraStore.estaCerregando"
-              >
-                {{ leituraStore.estaCerregando ? 'Enviando...' : 'Cadastrar' }}
-              </button>
-            </div>
+              <!-- Linha 7: Status Leitura + Gêneros -->
+              <div class="columns is-multiline">
+                <div class="column is-6">
+                  <div
+                    v-if="statusLeituraStore.estaCarregandoStatusLeitura"
+                    class="has-text-centered"
+                  >
+                    <Carregando />
+                  </div>
+                  <div v-else>
+                    <StatusLeiturasSelect
+                      v-model="statusLeituraSelecionado"
+                      :options="statusLeituraStore.statusLeitura"
+                      :creatable="false"
+                    />
+                  </div>
+                </div>
+
+                <div class="column is-6">
+                  <div v-if="generoStore.estaCarregandoGenero" class="has-text-centered">
+                    <Carregando />
+                  </div>
+                  <div v-else>
+                    <GenerosSelect
+                      v-model="generosSelecionados"
+                      :options="generoStore.generos"
+                      :creatable="false"
+                      multiple
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botão -->
+              <div class="field mt-5">
+                <div class="control">
+                  <button
+                    type="submit"
+                    class="button is-primary is-fullwidth"
+                    :disabled="leituraStore.estaCerregando"
+                  >
+                    {{ leituraStore.estaCerregando ? 'Enviando...' : 'Cadastrar' }}
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style></style>

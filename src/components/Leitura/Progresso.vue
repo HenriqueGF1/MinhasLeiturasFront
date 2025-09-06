@@ -103,36 +103,29 @@ async function adicionarProgresso() {
 
 <template>
   <div>
-    <button class="button is-primary is-fullwidth" @click="adicionarProgresso">
-      Adicionar Progresso
-    </button>
+    <!-- Botão abrir modal -->
+    <button @click="isActive = true" class="button is-primary is-small">Adicionar Progresso</button>
 
+    <!-- Modal -->
     <div class="modal" :class="{ 'is-active': isActive }">
       <div class="modal-background" @click="isActive = false"></div>
 
       <div class="modal-card">
+        <!-- Cabeçalho -->
         <header class="modal-card-head">
-          <p class="modal-card-title">Formulário</p>
+          <p class="modal-card-title">Adicionar Progresso</p>
           <button class="delete" aria-label="close" @click="isActive = false"></button>
         </header>
 
+        <!-- Corpo -->
         <section class="modal-card-body">
-          <!-- Leitura -->
-          <div class="field">
-            <div class="control">
-              <input
-                id="id_leitura"
-                type="hidden"
-                v-model="progressoLeitura.id_leitura"
-                class="input"
-              />
-            </div>
-            <ErroMensagemValidacaoForm v-if="erros.id_leitura" :erros="erros.id_leitura" />
-          </div>
+          <!-- Leitura (hidden) -->
+          <input id="id_leitura" type="hidden" v-model="progressoLeitura.id_leitura" />
+          <ErroMensagemValidacaoForm v-if="erros.id_leitura" :erros="erros.id_leitura" />
 
           <!-- Número de páginas lidas -->
           <div class="field">
-            <label class="label">Página que você parou a leitura.</label>
+            <label class="label">Página em que você parou</label>
             <div class="control">
               <div class="select is-fullwidth">
                 <select v-model="progressoLeitura.qtd_paginas_lidas">
@@ -143,6 +136,10 @@ async function adicionarProgresso() {
                 </select>
               </div>
             </div>
+            <ErroMensagemValidacaoForm
+              v-if="erros.qtd_paginas_lidas"
+              :erros="erros.qtd_paginas_lidas"
+            />
           </div>
 
           <!-- Data de leitura -->
@@ -160,7 +157,8 @@ async function adicionarProgresso() {
           </div>
         </section>
 
-        <footer class="modal-card-foot">
+        <!-- Rodapé -->
+        <footer class="modal-card-foot is-justify-content-flex-end">
           <button class="button is-success" @click="salvar">Salvar</button>
           <button class="button" @click="isActive = false">Cancelar</button>
         </footer>
@@ -172,5 +170,24 @@ async function adicionarProgresso() {
 <style>
 .modal-card {
   max-width: 500px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.modal-card-head,
+.modal-card-foot {
+  padding: 1rem 1.25rem;
+}
+
+.modal-card-body {
+  padding: 1.25rem;
+}
+
+.select select {
+  border-radius: 6px;
+}
+
+.input {
+  border-radius: 6px;
 }
 </style>

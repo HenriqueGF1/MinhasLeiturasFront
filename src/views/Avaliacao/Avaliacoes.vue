@@ -16,18 +16,21 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title has-text-centered">Tela de Avaliações</h1>
+      <!-- Título -->
+      <h1 class="title has-text-centered mb-6">📖 Tela de Avaliações</h1>
 
-      <div v-if="avaliacoesStore.estaCarregandoAvaliacao">
+      <!-- Carregando -->
+      <div v-if="avaliacoesStore.estaCarregandoAvaliacao" class="has-text-centered">
         <Carregando />
       </div>
 
+      <!-- Avaliações -->
       <div v-else-if="avaliacoesStore.avaliacoes.length >= 1">
         <div class="columns is-multiline is-centered">
           <div
             v-for="avaliacao in avaliacoesStore.avaliacoes"
             :key="avaliacao.id_avaliacao_leitura"
-            class="column is-6"
+            class="column is-12-mobile is-6-tablet is-4-desktop"
           >
             <AvaliacoesCard
               :avaliacao="avaliacao"
@@ -40,14 +43,35 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-else class="has-text-centered">
-        <p class="subtitle">Nenhuma avaliação disponível.</p>
+      <!-- Estado vazio -->
+      <div v-else class="has-text-centered mt-6">
+        <p class="subtitle has-text-grey">Nenhuma avaliação disponível no momento.</p>
+        <p>✨ Que tal adicionar a primeira avaliação?</p>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
+.section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.column {
+  display: flex;
+  justify-content: center;
+}
+
+.subtitle {
+  margin-top: 1rem;
+}
+
+/* Loader customizado (se não for usar Bulma loader) */
 .loader {
   border: 4px solid transparent;
   border-top: 4px solid #00d1b2;
@@ -55,6 +79,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   animation: spin 1s linear infinite;
+  margin: 2rem auto;
 }
 
 @keyframes spin {

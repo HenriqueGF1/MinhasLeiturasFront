@@ -86,6 +86,7 @@ export const useLeituraStore = defineStore('leitura', {
       this.estaCarregando = true
       try {
         const response = await api.get('/usuario-leitura')
+        console.log('Response ', response)
         this.leiturasUsuario = response.data.data
       } catch (error) {
         console.error('Erro ao carregar leituras do usuario:', error)

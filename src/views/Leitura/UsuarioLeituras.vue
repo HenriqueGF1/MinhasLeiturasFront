@@ -4,9 +4,10 @@ import { onMounted } from 'vue'
 import { useLeituraStore } from '@/stores/leituraStore'
 
 import Carregando from '../../components/Carregando.vue'
-import Avaliacao from '../../components/Leitura/Avaliacao.vue'
+// import Avaliacao from '../../components/Leitura/Avaliacao.vue'
 import LeituraCardUsuario from '../../components/Leitura/LeituraCardUsuario.vue'
-import Progresso from '../../components/Leitura/Progresso.vue'
+
+// import Progresso from '../../components/Leitura/Progresso.vue'
 
 const leituraStore = useLeituraStore()
 
@@ -18,47 +19,34 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title has-text-centered">Tela de Leituras do Usuário</h1>
+      <!-- Título principal -->
+      <h1 class="title has-text-centered mb-6">📚 Leituras do Usuário</h1>
 
-      <!-- Enquanto estiver carregando -->
-      <div v-if="leituraStore.estaCarregando">
+      <!-- Loader -->
+      <div v-if="leituraStore.estaCarregando" class="has-text-centered my-6">
         <Carregando />
       </div>
 
-      <!-- Quando terminar de carregar -->
-      <div v-else>
-        <!-- Se não houver leituras -->
+      <!-- Nenhuma leitura -->
+      <div
+        v-else-if="!leituraStore.leiturasUsuario || leituraStore.leiturasUsuario.length === 0"
+        class="has-text-centered"
+      >
+        <p class="subtitle has-text-grey-light">Nenhuma leitura disponível.</p>
+        <p>Adicione sua primeira leitura clicando no botão "Nova Leitura".</p>
+      </div>
+
+      <!-- Lista de leituras -->
+      <div v-else class="columns is-multiline is-variable is-4">
         <div
-          v-if="!leituraStore.leiturasUsuario || leituraStore.leiturasUsuario.length === 0"
-          class="has-text-centered"
+          v-for="leitura in leituraStore.leiturasUsuario"
+          :key="leitura.id_leitura"
+          class="column is-12-mobile is-6-tablet is-4-desktop"
         >
-          <p class="subtitle">Nenhuma leitura disponível.</p>
-        </div>
-
-        <!-- Se houver leituras -->
-        <div v-else class="columns is-multiline is-centered">
-          <div
-            v-for="leitura in leituraStore.leiturasUsuario"
-            :key="leitura.id_leitura"
-            class="column is-4-tablet is-3-desktop"
-          >
-            <LeituraCardUsuario
-              :leitura="leitura.leitura"
-              @delete="() => leituraStore.deleteLeitura(leitura.id_usuario_leitura)"
-            />
-
-            <div class="box mt-4">
-              <div class="buttons">
-                <div v-if="leitura.id_status_leitura === 2" class="mr-2">
-                  <Progresso :id_leitura="leitura.id_leitura" />
-                </div>
-
-                <div v-if="!leitura.avaliacao">
-                  <Avaliacao :id_leitura="leitura.id_leitura" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <LeituraCardUsuario
+            :leitura="leitura"
+            @delete="() => leituraStore.deleteLeitura(leitura.id_usuario_leitura)"
+          />
         </div>
       </div>
     </div>

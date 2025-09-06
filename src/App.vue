@@ -28,39 +28,56 @@ const logout = async () => {
 </script>
 
 <template>
-  <div :class="['navbar-menu', { 'is-active': burgerActive }]">
-    <div class="navbar-start">
-      <router-link class="navbar-item" :to="{ name: 'leituras' }">MeuApp</router-link>
-
-      <!-- Links quando NÃO está logado -->
-      <router-link v-if="!isLogado" class="navbar-item" :to="{ name: 'leituras' }">
-        Leituras
-      </router-link>
-      <router-link v-if="!isLogado" class="navbar-item" :to="{ name: 'usuario-cadastrar' }">
-        Cadastro
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <router-link class="navbar-item has-text-weight-bold" :to="{ name: 'leituras' }">
+        MeuApp
       </router-link>
 
-      <!-- Links quando ESTÁ logado -->
-      <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'leituras' }">
-        Leituras
-      </router-link>
-      <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'leituras-cadastrar' }">
-        Cadastrar Leitura
-      </router-link>
-      <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'usuario-leituras' }">
-        Minhas Leituras
-      </router-link>
-      <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'avaliacao-pesquisa' }">
-        Avaliações
-      </router-link>
+      <!-- Burger menu para mobile -->
+      <a
+        role="button"
+        class="navbar-burger"
+        :class="{ 'is-active': burgerActive }"
+        aria-label="menu"
+        aria-expanded="false"
+        @click="burgerActive = !burgerActive"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
     </div>
 
-    <div class="navbar-end">
-      <button v-if="isLogado" class="navbar-item" @click="logout">Sair</button>
-      <router-link v-else class="navbar-item" :to="{ name: 'login' }">Login</router-link>
-    </div>
-  </div>
+    <div :class="['navbar-menu', { 'is-active': burgerActive }]">
+      <div class="navbar-start">
+        <router-link class="navbar-item" :to="{ name: 'leituras' }">Leituras</router-link>
+        <router-link v-if="!isLogado" class="navbar-item" :to="{ name: 'usuario-cadastrar' }">
+          Cadastro
+        </router-link>
+        <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'leituras-cadastrar' }">
+          Cadastrar Leitura
+        </router-link>
+        <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'usuario-leituras' }">
+          Minhas Leituras
+        </router-link>
+        <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'avaliacao-pesquisa' }">
+          Avaliações
+        </router-link>
+      </div>
 
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <button v-if="isLogado" @click="logout" class="">Sair</button>
+            <router-link v-else class="" :to="{ name: 'login' }"> Login </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Conteúdo principal -->
   <main class="section">
     <router-view />
   </main>
@@ -71,5 +88,11 @@ const logout = async () => {
 <style scoped>
 main {
   min-height: calc(100vh - 120px);
+}
+
+/* Navbar sticky opcional */
+.navbar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem 1.5rem;
 }
 </style>
