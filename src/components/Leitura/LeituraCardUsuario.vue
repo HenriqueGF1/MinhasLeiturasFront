@@ -22,8 +22,9 @@ const descricaoCurta = computed(() => {
 })
 
 const formatarData = (data) => {
-  const d = new Date(data)
-  return d.toLocaleDateString('pt-BR') // → 01/09/2025
+  if (!data) return ''
+  const apenasData = data.split(' ')[0]
+  return apenasData
 }
 </script>
 
@@ -37,8 +38,8 @@ const formatarData = (data) => {
 
     <div class="card-content">
       <div class="content has-text-centered">
-        <p class="title is-5">{{ leitura.leitura.titulo }}</p>
-        <p class="subtitle is-6">
+        <p class="title is-6">{{ leitura.leitura.titulo }}</p>
+        <p class="subtitle is-7">
           {{ leitura.leitura.autor || 'Autor desconhecido' }}
         </p>
 
@@ -46,20 +47,23 @@ const formatarData = (data) => {
           {{ descricaoCurta }}
         </div>
 
-        <small class="has-text-grey">
+        <small class="has-text-grey is-size-7">
           📅 Publicado: {{ formatarData(leitura.leitura.data_publicacao) }} | 📚
           {{ leitura.leitura.qtd_paginas }} páginas | 📖
           {{ leitura.leitura.qtd_capitulos }} capítulos
         </small>
       </div>
     </div>
-    <footer class="card-footer" style="padding: 0.75rem; text-align: center">
-      <div class="box mt-4">
-        <div class="buttons">
-          <button @click="handleDelete" class="button is-danger is-small" style="margin: 0 auto">
-            Excluir
-          </button>
-          <div v-if="leitura.id_status_leitura === 2" class="mr-2">
+
+    <footer class="card-footer" style="padding: 0.5rem">
+      <div class="box mt-3" style="padding: 0.5rem">
+        <div
+          class="is-flex is-justify-content-center is-align-items-center is-flex-wrap-nowrap"
+          style="gap: 0.5rem"
+        >
+          <button @click="handleDelete" class="button is-danger is-small">Excluir</button>
+
+          <div v-if="leitura.id_status_leitura === 2">
             <Progresso :id_leitura="leitura.leitura.id_leitura" />
           </div>
 
@@ -76,33 +80,37 @@ const formatarData = (data) => {
 .leitura-card {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  max-width: 300px;
+  width: 100%;
+  min-height: 380px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: visible;
+  margin: 1rem auto;
 }
 
 .card-image img {
   object-fit: cover;
-  height: 250px;
+  height: 180px;
   width: 100%;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .card-content {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* Espaçamento interno mais compacto */
-  padding: 1rem;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
 }
 
 .descricao {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
+  margin: 0.3rem 0;
+  font-size: 0.85rem;
   color: #4a4a4a;
   line-height: 1.3;
 }
 
-/* Tooltip */
 .tooltip {
   position: relative;
   cursor: help;
@@ -118,11 +126,11 @@ const formatarData = (data) => {
   transform: translateX(-50%);
   background: #f5f5f5;
   color: #333;
-  padding: 0.5rem;
+  padding: 0.4rem;
   border-radius: 6px;
   white-space: pre-wrap;
-  width: 280px;
-  font-size: 0.85rem;
+  width: 220px; /* menor tooltip */
+  font-size: 0.8rem;
   text-align: center;
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

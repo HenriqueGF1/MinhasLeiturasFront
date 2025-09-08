@@ -20,28 +20,24 @@ function deletarAvaliacaoLeitura() {
 
 const formatarData = (data) => {
   if (!data) return ''
-  const d = new Date(data)
-  if (isNaN(d)) return data
-  return d.toLocaleDateString('pt-BR')
+  const apenasData = data.split(' ')[0]
+  return apenasData
 }
 </script>
 
 <template>
   <div class="card leitura-card">
-    <!-- Conteúdo principal -->
     <div class="card-content is-flex is-flex-direction-row is-flex-wrap-wrap">
-      <!-- Capa -->
-      <figure class="image capa mr-5">
+      <figure class="image capa mr-4">
         <img :src="leitura.capa" :alt="leitura.titulo" />
       </figure>
 
-      <!-- Informações -->
       <div class="content is-flex is-flex-direction-column is-justify-content-space-between flex-1">
         <div>
-          <h2 class="title is-4 mb-2">{{ leitura.titulo }}</h2>
-          <p class="subtitle is-6 line-clamp-3">{{ leitura.descricao }}</p>
+          <h2 class="title is-5 mb-2">{{ leitura.titulo }}</h2>
+          <p class="subtitle is-7 line-clamp-3">{{ leitura.descricao }}</p>
 
-          <ul class="is-size-6 mt-3">
+          <ul class="is-size-7 mt-2">
             <li><strong>ISBN:</strong> {{ leitura.isbn }}</li>
             <li><strong>Publicação:</strong> {{ formatarData(leitura.data_publicacao) }}</li>
             <li><strong>Capítulos:</strong> {{ leitura.qtd_capitulos }}</li>
@@ -49,8 +45,7 @@ const formatarData = (data) => {
           </ul>
         </div>
 
-        <!-- Avaliação -->
-        <div v-if="avaliacao" class="avaliacao mt-4 pt-3">
+        <div v-if="avaliacao" class="avaliacao mt-3 pt-2">
           <h3 class="has-text-weight-semibold mb-2">Avaliação</h3>
           <p><strong>Nota:</strong> {{ avaliacao.nota }} / 10</p>
           <p class="line-clamp-3">
@@ -64,14 +59,10 @@ const formatarData = (data) => {
       </div>
     </div>
 
-    <!-- Rodapé -->
     <footer class="card-footer">
-      <a
-        @click="deletarAvaliacaoLeitura"
-        class="card-footer-item has-text-danger has-text-weight-semibold"
-      >
-        ❌ Excluir
-      </a>
+      <button @click="deletarAvaliacaoLeitura" class="button is-danger is-small is-fullwidth">
+        Excluir
+      </button>
     </footer>
   </div>
 </template>
@@ -80,24 +71,22 @@ const formatarData = (data) => {
 .leitura-card {
   display: flex;
   flex-direction: column;
-  min-height: 420px;
-  max-width: 1100px; /* largura máxima do card */
+  min-height: 300px;
+  max-width: 400px;
   width: 100%;
-  margin: 1.5rem auto; /* mais respiro fora do card */
-  border-radius: 12px;
+  margin: 1rem auto;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  background: black;
 }
 
 .card-content {
-  padding: 2rem 2.5rem; /* 🔥 mais espaçamento interno */
-  gap: 1.5rem; /* espaço entre capa e infos */
+  padding: 1.2rem 1.5rem;
+  gap: 1rem;
 }
 
 .capa {
-  width: 220px;
-  height: 320px;
+  width: 140px;
+  height: 200px;
   flex-shrink: 0;
 }
 
@@ -105,21 +94,21 @@ const formatarData = (data) => {
   object-fit: cover;
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .content {
-  padding: 0.5rem 0; /* menos padding interno, fica equilibrado */
+  padding: 0.3rem 0;
 }
 
 .avaliacao {
   border-top: 1px solid black;
-  padding-top: 1rem; /* separação do bloco acima */
-  margin-top: 1rem;
+  padding-top: 0.7rem;
+  margin-top: 0.7rem;
 }
 
 .card-footer {
   margin-top: auto;
-  padding: 1rem 1.5rem; /* padding no rodapé */
+  padding: 0.7rem 1rem;
 }
 </style>

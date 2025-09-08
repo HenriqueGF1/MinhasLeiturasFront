@@ -20,8 +20,8 @@ const props = defineProps({
 
 const avaliacao = reactive({
   id_leitura: props.id_leitura,
-  nota: 10,
-  descricao_avaliacao: 'Otima',
+  nota: '',
+  descricao_avaliacao: '',
   data_inicio: '',
   data_termino: '',
 })
@@ -48,23 +48,18 @@ async function salvar() {
 
 <template>
   <div>
-    <!-- Botão de abrir modal -->
     <button @click="isActive = true" class="button is-primary is-small">Avaliar</button>
 
-    <!-- Modal -->
     <div class="modal" :class="{ 'is-active': isActive }">
       <div class="modal-background" @click="isActive = false"></div>
 
       <div class="modal-card">
-        <!-- Cabeçalho -->
         <header class="modal-card-head">
           <p class="modal-card-title">Avaliação</p>
           <button class="delete" aria-label="close" @click="isActive = false"></button>
         </header>
 
-        <!-- Corpo -->
         <section class="modal-card-body">
-          <!-- Nota -->
           <div class="field">
             <label class="label" for="nota">Nota</label>
             <div class="control">
@@ -82,7 +77,6 @@ async function salvar() {
             </p>
           </div>
 
-          <!-- Descrição -->
           <div class="field">
             <label class="label" for="descricao_avaliacao">Descrição</label>
             <div class="control">
@@ -98,7 +92,6 @@ async function salvar() {
             </p>
           </div>
 
-          <!-- Data início -->
           <div class="field is-horizontal">
             <div class="field-body">
               <div class="field">
@@ -116,7 +109,6 @@ async function salvar() {
                 </p>
               </div>
 
-              <!-- Data término -->
               <div class="field">
                 <label class="label" for="data_termino">Término</label>
                 <div class="control">
@@ -135,7 +127,6 @@ async function salvar() {
           </div>
         </section>
 
-        <!-- Rodapé -->
         <footer class="modal-card-foot is-justify-content-flex-end">
           <button class="button is-success" @click="salvar">Salvar</button>
           <button class="button" @click="isActive = false">Cancelar</button>

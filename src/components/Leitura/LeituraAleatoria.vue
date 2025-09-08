@@ -49,7 +49,6 @@ const descricaoCurta = computed(() => {
   margin: 1rem auto;
 }
 
-/* Tooltip estilo Bulma-like */
 .tooltip {
   position: relative;
   cursor: help;

@@ -16,15 +16,12 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <!-- Título -->
       <h1 class="title has-text-centered mb-6">📖 Tela de Avaliações</h1>
 
-      <!-- Carregando -->
-      <div v-if="avaliacoesStore.estaCarregandoAvaliacao" class="has-text-centered">
+      <div v-if="avaliacoesStore.estaCarregandoAvaliacao" class="has-text-centered my-6">
         <Carregando />
       </div>
 
-      <!-- Avaliações -->
       <div v-else-if="avaliacoesStore.avaliacoes.length >= 1">
         <div class="columns is-multiline is-centered">
           <div
@@ -43,10 +40,15 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Estado vazio -->
       <div v-else class="has-text-centered mt-6">
         <p class="subtitle has-text-grey">Nenhuma avaliação disponível no momento.</p>
-        <p>✨ Que tal adicionar a primeira avaliação?</p>
+        <p class="is-size-6">✨ Que tal adicionar a primeira avaliação?</p>
+        <button
+          class="button is-primary is-small mt-4 is-rounded"
+          @click="$emit('adicionarAvaliacao')"
+        >
+          Adicionar Avaliação
+        </button>
       </div>
     </div>
   </section>
@@ -71,7 +73,6 @@ onMounted(() => {
   margin-top: 1rem;
 }
 
-/* Loader customizado (se não for usar Bulma loader) */
 .loader {
   border: 4px solid transparent;
   border-top: 4px solid #00d1b2;
@@ -89,5 +90,10 @@ onMounted(() => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.button.is-small {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 </style>

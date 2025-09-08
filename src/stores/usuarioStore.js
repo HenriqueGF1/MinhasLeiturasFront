@@ -1,4 +1,3 @@
-// stores/leituraStore.js
 import { defineStore } from 'pinia'
 
 import api from '../api/instanceAxios'
@@ -26,10 +25,14 @@ export const useUsuarioStore = defineStore('usuario', {
     async login(data) {
       try {
         const response = await api.post('/usuario/login', data)
+        if (response.data.message) {
+          this.erros = [response.data.message]
+          return
+        }
         const token = response.data.authorisation.token
         localStorage.setItem('token', token)
         this.logado = true
-        return response.data
+        return response
       } catch (error) {
         this.erros = error?.response?.data?.errors ?? []
         this.logado = true

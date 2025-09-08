@@ -7,7 +7,6 @@ const api = axios.create({
   timeout: 10000,
 })
 
-// Interceptor de request → injeta token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -26,7 +25,10 @@ api.interceptors.response.use(
       localStorage.removeItem('token')
       const usuarioStore = useUsuarioStore()
       usuarioStore.logado = false
-      router.push({ name: 'login' })
+
+      if (router.currentRoute.value.name !== 'leituras') {
+        router.push({ name: 'login' })
+      }
     }
 
     return Promise.reject(error)

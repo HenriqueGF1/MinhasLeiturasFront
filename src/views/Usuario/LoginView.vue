@@ -20,9 +20,8 @@ onMounted(() => {
 })
 
 const usuario = reactive({
-  email: 'Henrique@gmail.com',
-  // email: 'H',
-  password: '12345678',
+  email: '',
+  password: '',
 })
 
 const novosErros = reactive({})
@@ -34,7 +33,9 @@ const realizarLogin = async () => {
 
   Object.assign(novosErros, usuarioStore.erros)
 
-  if (response.code != 200) {
+  console.log('Minha respsota ', response)
+
+  if (response.status != 200) {
     return
   }
 
@@ -44,14 +45,13 @@ const realizarLogin = async () => {
 
 <template>
   <div class="columns is-vcentered is-centered" style="height: 100vh">
-    <!-- Coluna Login -->
     <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
       <div class="box" style="width: 100%; max-width: 400px">
         <h1 class="title has-text-centered">Login de Usuário</h1>
 
-        <!-- <div v-if="Object.keys(novosErros).length" class="notification is-danger">
+        <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
           <ErroMensagemValidacaoForm :erros="novosErros" />
-        </div> -->
+        </div>
 
         <form @submit.prevent="realizarLogin">
           <div class="field">
@@ -90,12 +90,10 @@ const realizarLogin = async () => {
     </div>
 
     <div class="column is-4 is-flex is-justify-content-center is-align-items-center">
-      <!-- Mostra o loader enquanto carrega OU se não houver leitura -->
       <div v-if="leituraStore.estaCarregando || !leituraStore.leituraAleatoria">
         <Carregando />
       </div>
 
-      <!-- Renderiza só quando existir um objeto válido -->
       <LeituraAleatoria v-else :leitura="leituraStore.leituraAleatoria" />
     </div>
   </div>

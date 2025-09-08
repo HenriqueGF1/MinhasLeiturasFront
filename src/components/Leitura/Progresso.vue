@@ -18,23 +18,19 @@ const props = defineProps({
   },
 })
 
-// Estado do formulário
 const progressoLeitura = reactive({
   id_leitura: props.id_leitura,
   qtd_paginas_lidas: null,
   data_leitura: null,
 })
 
-// Erros de validação
 const erros = reactive({})
 
-// Progresso total vindo do fetch
 const progressoTotal = ref({
   total_paginas_lidas: 0,
   qtd_paginas: 1,
 })
 
-// Computed → páginas possíveis para seleção
 const numeros = computed(() => {
   let inicio = progressoTotal.value.total_paginas_lidas || 0
   const fim = progressoTotal.value.qtd_paginas
@@ -45,13 +41,11 @@ const numeros = computed(() => {
   return Array.from({ length: fim - inicio + 1 }, (_, i) => i + inicio)
 })
 
-// Computed → calcular quantas páginas salvar
 const qtdPaginasParaSalvar = computed(() => {
   if (!progressoLeitura.qtd_paginas_lidas) return 0
   return progressoLeitura.qtd_paginas_lidas - (progressoTotal.value.total_paginas_lidas || 0)
 })
 
-// Utils
 function resetErros() {
   Object.keys(erros).forEach((k) => delete erros[k])
 }
@@ -61,7 +55,6 @@ function resetForm() {
   progressoLeitura.data_leitura = null
 }
 
-// Função para salvar o progresso
 async function salvar() {
   const dados = {
     ...progressoLeitura,
@@ -81,7 +74,6 @@ async function salvar() {
   }
 }
 
-// Função para buscar progresso do usuário
 async function buscarProgresso() {
   await progressoStore.fetchProgressoTotal({
     id_leitura: props.id_leitura,
@@ -94,7 +86,6 @@ async function buscarProgresso() {
   }
 }
 
-// Abrir modal e buscar progresso
 async function adicionarProgresso() {
   isActive.value = true
   await buscarProgresso()
@@ -103,27 +94,23 @@ async function adicionarProgresso() {
 
 <template>
   <div>
-    <!-- Botão abrir modal -->
-    <button @click="isActive = true" class="button is-primary is-small">Adicionar Progresso</button>
+    <button @click="adicionarProgresso" class="button is-primary is-small">
+      Adicionar Progresso
+    </button>
 
-    <!-- Modal -->
     <div class="modal" :class="{ 'is-active': isActive }">
       <div class="modal-background" @click="isActive = false"></div>
 
       <div class="modal-card">
-        <!-- Cabeçalho -->
         <header class="modal-card-head">
           <p class="modal-card-title">Adicionar Progresso</p>
           <button class="delete" aria-label="close" @click="isActive = false"></button>
         </header>
 
-        <!-- Corpo -->
         <section class="modal-card-body">
-          <!-- Leitura (hidden) -->
           <input id="id_leitura" type="hidden" v-model="progressoLeitura.id_leitura" />
           <ErroMensagemValidacaoForm v-if="erros.id_leitura" :erros="erros.id_leitura" />
 
-          <!-- Número de páginas lidas -->
           <div class="field">
             <label class="label">Página em que você parou</label>
             <div class="control">
@@ -142,7 +129,6 @@ async function adicionarProgresso() {
             />
           </div>
 
-          <!-- Data de leitura -->
           <div class="field">
             <label class="label" for="data_leitura">Data de Leitura</label>
             <div class="control">
@@ -157,7 +143,6 @@ async function adicionarProgresso() {
           </div>
         </section>
 
-        <!-- Rodapé -->
         <footer class="modal-card-foot is-justify-content-flex-end">
           <button class="button is-success" @click="salvar">Salvar</button>
           <button class="button" @click="isActive = false">Cancelar</button>

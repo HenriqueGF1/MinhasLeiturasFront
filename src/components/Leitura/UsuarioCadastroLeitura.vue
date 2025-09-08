@@ -47,6 +47,7 @@ async function usuarioCadastrarLeituraExistente() {
     await leituraStore.fetchLeituras()
     isActive.value = false
   } catch (error) {
+    console.error(error)
     isActive.value = true
   }
 }
@@ -54,7 +55,7 @@ async function usuarioCadastrarLeituraExistente() {
 
 <template>
   <div>
-    <button class="button is-primary is-fullwidth" @click="isActive = true">
+    <button class="button is-primary is-small is-fullwidth" @click="isActive = true">
       Adicionar Leitura
     </button>
 

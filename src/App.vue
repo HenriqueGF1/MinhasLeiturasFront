@@ -31,22 +31,22 @@ const logout = async () => {
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <router-link class="navbar-item has-text-weight-bold" :to="{ name: 'leituras' }">
-        MeuApp
+        MinhaBiblioteca
       </router-link>
 
-      <!-- Burger menu para mobile -->
-      <a
-        role="button"
+      <button
         class="navbar-burger"
         :class="{ 'is-active': burgerActive }"
         aria-label="menu"
-        aria-expanded="false"
+        :aria-expanded="burgerActive.toString()"
         @click="burgerActive = !burgerActive"
+        @keydown.enter.prevent="burgerActive = !burgerActive"
+        @keydown.space.prevent="burgerActive = !burgerActive"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
-      </a>
+      </button>
     </div>
 
     <div :class="['navbar-menu', { 'is-active': burgerActive }]">
@@ -77,7 +77,6 @@ const logout = async () => {
     </div>
   </nav>
 
-  <!-- Conteúdo principal -->
   <main class="section">
     <router-view />
   </main>
@@ -90,7 +89,6 @@ main {
   min-height: calc(100vh - 120px);
 }
 
-/* Navbar sticky opcional */
 .navbar {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0.75rem 1.5rem;

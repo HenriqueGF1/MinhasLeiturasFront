@@ -36,16 +36,14 @@ const leitura = reactive({
   data_publicacao: '',
   qtd_capitulos: '',
   qtd_paginas: '',
-  isbn: '978057507900',
+  isbn: '',
   data_registro: new Date().toISOString(),
   id_status_leitura: null,
   id_genero: [],
 })
 
-// Erros de validação
 const novosErros = reactive({})
 
-// Estados temporários dos selects
 const autorSelecionado = ref(null)
 const editoraSelecionado = ref(null)
 const generosSelecionados = ref([])
@@ -58,7 +56,6 @@ onMounted(() => {
   statusLeituraStore.fetchStatusLeitura()
 })
 
-// Funções para sincronizar selects com leitura
 function sincronizarSelecao(selecionado, idKey, nomeKey) {
   if (selecionado) {
     leitura[idKey] = selecionado[idKey] ?? null
@@ -161,6 +158,8 @@ const controleCamposCapa = () => {
 
   imagemPreviewDiv.style.display = 'block'
 
+  imagemPreview.class = 'image is-128x128'
+
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0]
     fileName.textContent = file.name
@@ -186,18 +185,15 @@ const controleCamposCapa = () => {
           <div class="box">
             <h1 class="title has-text-centered mb-5">Cadastrar Leitura</h1>
 
-            <!-- Carregando ISBN -->
             <div v-if="leituraStore.estaCarregandoIsbn" class="has-text-centered mb-4">
               <Carregando />
             </div>
 
-            <!-- Erros do formulário -->
             <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
               <ErroMensagemValidacaoForm :erros="novosErros" />
             </div>
 
             <form @submit.prevent="cadastrarLeitura">
-              <!-- Linha 1: Título + Autor -->
               <div class="columns is-multiline">
                 <div class="column is-6">
                   <div class="field">
@@ -226,7 +222,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Linha 2: Editora + ISBN -->
               <div class="columns is-multiline">
                 <div class="column is-6">
                   <div v-if="editorasStore.estaCarregandoEditoras" class="has-text-centered">
@@ -254,7 +249,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Linha 3: Capítulos + Páginas -->
               <div class="columns is-multiline">
                 <div class="column is-6">
                   <div class="field">
@@ -285,7 +279,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Linha 4: Data Publicação -->
               <div class="columns">
                 <div class="column is-6">
                   <div class="field">
@@ -302,7 +295,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Linha 5: Capa URL e arquivo -->
               <div class="field">
                 <label class="label" for="capaUrl">Capa (URL)</label>
                 <div class="control">
@@ -335,16 +327,10 @@ const controleCamposCapa = () => {
                 </label>
               </div>
 
-              <div class="field" id="imagemPreviewDiv" v-show="imagemPreviewUrl">
-                <img
-                  id="imagemPreview"
-                  :src="imagemPreviewUrl"
-                  alt="Pré-visualização da imagem"
-                  class="image is-128x128"
-                />
+              <div class="field" id="imagemPreviewDiv">
+                <img id="imagemPreview" alt="Capa do livro - pré-visualização" />
               </div>
 
-              <!-- Linha 6: Descrição -->
               <div class="field">
                 <label class="label" for="descricao">Descrição</label>
                 <div class="control">
@@ -352,7 +338,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Linha 7: Status Leitura + Gêneros -->
               <div class="columns is-multiline">
                 <div class="column is-6">
                   <div
@@ -385,7 +370,6 @@ const controleCamposCapa = () => {
                 </div>
               </div>
 
-              <!-- Botão -->
               <div class="field mt-5">
                 <div class="control">
                   <button
@@ -405,4 +389,8 @@ const controleCamposCapa = () => {
   </section>
 </template>
 
-<style></style>
+<style>
+#imagemPreviewDiv {
+  display: none;
+}
+</style>

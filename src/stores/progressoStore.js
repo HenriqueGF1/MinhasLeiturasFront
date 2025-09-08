@@ -14,6 +14,7 @@ export const useProgressoStore = defineStore('progresso', {
       this.estaCarregando = true
       try {
         const resposta = await api.post(`/progresso/total`, data)
+        console.log('Resposta progress ', resposta)
         this.progressoTotal = resposta.data.data
       } catch (error) {
         this.progressoTotal = []

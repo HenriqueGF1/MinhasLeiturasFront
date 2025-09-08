@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'leituras',
+      name: 'inicio',
       component: () => import('@/views/Leitura/Leituras.vue'),
     },
     {

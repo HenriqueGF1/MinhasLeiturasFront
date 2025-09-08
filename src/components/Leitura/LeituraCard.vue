@@ -1,4 +1,3 @@
-<!-- components/LeituraCard.vue -->
 <script setup>
 import { computed } from 'vue'
 
@@ -25,8 +24,9 @@ const descricaoCurta = computed(() => {
 })
 
 const formatarData = (data) => {
-  const d = new Date(data)
-  return d.toLocaleDateString('pt-BR') // → 01/09/2025
+  if (!data) return ''
+  const apenasData = data.split(' ')[0]
+  return apenasData
 }
 </script>
 
@@ -39,24 +39,23 @@ const formatarData = (data) => {
     </div>
 
     <div class="card-content">
-      <p class="title is-5 has-text-centered">{{ leitura.titulo }}</p>
-      <p class="subtitle is-6 has-text-centered">
+      <p class="title is-6 has-text-centered">{{ leitura.titulo }}</p>
+      <p class="subtitle is-7 has-text-centered">
         {{ leitura.autor || 'Autor desconhecido' }}
       </p>
 
-      <!-- Tooltip custom -->
-      <div class="content tooltip" :data-tooltip="leitura.descricao">
+      <div class="content tooltip mt-2" :data-tooltip="leitura.descricao">
         {{ descricaoCurta }}
         <br />
-        <small class="has-text-grey">
+        <small class="has-text-grey is-size-7">
           📅 Publicado: {{ formatarData(leitura.data_publicacao) }} | 📚
           {{ leitura.qtd_paginas }} páginas | 📖 {{ leitura.qtd_capitulos }} capítulos
         </small>
       </div>
     </div>
 
-    <footer class="card-footer">
-      <div v-if="usuarioStore.logado && leitura.usuario_tem_leitura == false">
+    <footer class="card-footer has-text-centered p-2">
+      <div v-if="usuarioStore.logado && !leitura.usuario_tem_leitura">
         <UsuarioCadastroLeitura
           :id_leitura="leitura.id_leitura"
           :statusDeLeitura="statusLeituraStore.statusLeitura"
@@ -68,9 +67,15 @@ const formatarData = (data) => {
 
 <style scoped>
 .leitura-card {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  max-width: 280px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin: 0.8rem auto;
 }
 
 .card-image {
@@ -78,8 +83,8 @@ const formatarData = (data) => {
 }
 
 .card-image img {
-  object-fit: contain;
-  height: 250px;
+  object-fit: cover;
+  height: 180px;
   width: 100%;
 }
 
@@ -87,19 +92,21 @@ const formatarData = (data) => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  padding: 0.8rem 1rem;
 }
 
 .card-footer {
   margin-top: auto;
+  padding: 0.5rem;
 }
 
 .title,
 .subtitle {
   text-align: center;
+  margin-bottom: 0.3rem;
 }
 
-/* Tooltip estilo Bulma-like */
 .tooltip {
   position: relative;
   cursor: help;
@@ -114,14 +121,15 @@ const formatarData = (data) => {
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
-  color: black;
-  padding: 0.5rem;
+  color: #000;
+  padding: 0.4rem 0.6rem;
   border-radius: 6px;
   white-space: pre-wrap;
-  width: 250px;
-  font-size: 0.85rem;
+  width: 220px;
+  font-size: 0.8rem;
   text-align: center;
   z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: opacity 0.2s ease-in-out;
 }
 

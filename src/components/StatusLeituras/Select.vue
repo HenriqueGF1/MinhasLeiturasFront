@@ -10,10 +10,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-// Ref interno para manipular localmente o valor
 const localValue = ref(props.modelValue)
 
-// Sincroniza alterações do pai para o localValue
 watch(
   () => props.modelValue,
   (novo) => {
@@ -21,7 +19,6 @@ watch(
   },
 )
 
-// Emite para o pai quando localValue muda
 watch(localValue, (novo) => {
   emit('update:modelValue', novo)
 })
