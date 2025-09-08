@@ -1,33 +1,31 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useLeituraStore } from '@/stores/leituraStore'
+import { useUsuarioStore } from '@/stores/usuarioStore'
 
 import LeituraAleatoria from '@/components/Leitura/LeituraAleatoria.vue'
 
-import api from '../../api/instanceAxios'
 import Carregando from '../../components/Carregando.vue'
 import ErroMensagemValidacaoForm from '../../components/ErroMensagemValidacaoForm.vue'
 
 const leituraStore = useLeituraStore()
+const usuarioStore = useUsuarioStore()
+
+const novosErros = reactive({})
+
+const router = useRouter()
 
 onMounted(() => {
   leituraStore.fetchLeituraAleatoria()
 })
 
 const usuario = reactive({
-  nome: 'Ana',
-  email: 'Ana@gmail.com',
-  password: '12345678',
+  nome: '',
+  email: '',
+  password: '',
   data_nascimento: '',
-})
-
-const erros = reactive({
-  geral: [],
-  nome: [],
-  email: [],
-  password: [],
-  data_nascimento: [],
 })
 
 const carregar = ref(false)
@@ -38,33 +36,17 @@ const dataMinima18anos = ref(
 )
 
 const cadastrarUsuario = async () => {
-  carregar.value = true
-  erros.geral = []
-  erros.nome = []
-  erros.email = []
-  erros.password = []
-  erros.data_nascimento = []
+  Object.assign(novosErros, {})
 
-  try {
-    const response = await api.post('/usuario/cadastrar', { ...usuario })
+  const response = await usuarioStore.cadastro(usuario)
 
-    const token = response.data.authorisation.token
-    localStorage.setItem('auth_token', token)
-  } catch (error) {
-    if (error.response?.status === 500) {
-      erros.geral = ['Erro. Tente novamente mais tarde.']
-    } else if (error.response?.data?.errors) {
-      const dataErrors = error.response.data.errors
-      erros.nome = dataErrors.nome ?? []
-      erros.email = dataErrors.email ?? []
-      erros.password = dataErrors.password ?? []
-      erros.data_nascimento = dataErrors.data_nascimento ?? []
-    } else {
-      erros.geral = ['Ocorreu um erro inesperado.']
-    }
-  } finally {
-    carregar.value = false
+  Object.assign(novosErros, usuarioStore.erros)
+
+  if (response.status != 200) {
+    return
   }
+
+  router.push({ name: 'leituras' })
 }
 </script>
 
@@ -74,57 +56,38 @@ const cadastrarUsuario = async () => {
       <div class="box">
         <h1 class="title has-text-centered">Cadastro de Usuário</h1>
 
-        <!-- Erros gerais -->
-        <div v-if="erros.geral.length" class="notification is-danger">
-          <ErroMensagemValidacaoForm :erros="erros.geral" />
+        <div v-if="Object.keys(novosErros).length" class="notification is-danger is-light">
+          <ErroMensagemValidacaoForm :erros="novosErros" />
         </div>
 
         <form @submit.prevent="cadastrarUsuario">
           <div class="field">
             <label class="label" for="nome">Nome</label>
             <div class="control">
-              <input
-                id="nome"
-                type="text"
-                v-model="usuario.nome"
-                class="input"
-                :class="{ 'is-danger': erros.nome.length }"
-              />
+              <input id="nome" type="text" v-model="usuario.nome" class="input" />
             </div>
-            <p v-if="erros.nome.length">
-              <ErroMensagemValidacaoForm :erros="erros.nome" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.nome" />
             </p>
           </div>
 
           <div class="field">
             <label class="label" for="email">Email</label>
             <div class="control">
-              <input
-                id="email"
-                type="email"
-                v-model="usuario.email"
-                class="input"
-                :class="{ 'is-danger': erros.email.length }"
-              />
+              <input id="email" type="text" v-model="usuario.email" class="input" />
             </div>
-            <p v-if="erros.email.length">
-              <ErroMensagemValidacaoForm :erros="erros.email" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.email" />
             </p>
           </div>
 
           <div class="field">
             <label class="label" for="password">Senha</label>
             <div class="control">
-              <input
-                id="password"
-                type="password"
-                v-model="usuario.password"
-                class="input"
-                :class="{ 'is-danger': erros.password.length }"
-              />
+              <input id="password" type="password" v-model="usuario.password" class="input" />
             </div>
-            <p v-if="erros.password.length">
-              <ErroMensagemValidacaoForm :erros="erros.password" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.password" />
             </p>
           </div>
 
@@ -137,11 +100,10 @@ const cadastrarUsuario = async () => {
                 v-model="usuario.data_nascimento"
                 :max="dataMinima18anos"
                 class="input"
-                :class="{ 'is-danger': erros.data_nascimento.length }"
               />
             </div>
-            <p v-if="erros.data_nascimento.length">
-              <ErroMensagemValidacaoForm :erros="erros.data_nascimento" />
+            <p v-if="Object.keys(novosErros).length">
+              <ErroMensagemValidacaoForm :erros="novosErros.data_nascimento" />
             </p>
           </div>
 

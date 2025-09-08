@@ -39,5 +39,22 @@ export const useUsuarioStore = defineStore('usuario', {
         return error.response
       }
     },
+    async cadastro(data) {
+      try {
+        const response = await api.post('/usuario', data)
+        if (response.data.message) {
+          this.erros = [response.data.message]
+          return
+        }
+        const token = response.data.authorisation.token
+        localStorage.setItem('token', token)
+        this.logado = true
+        return response
+      } catch (error) {
+        this.erros = error?.response?.data?.errors ?? []
+        this.logado = true
+        return error.response
+      }
+    },
   },
 })

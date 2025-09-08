@@ -20,8 +20,8 @@ onMounted(() => {
 })
 
 const usuario = reactive({
-  email: '',
-  password: '',
+  email: 'Henrique@gmail.com',
+  password: '12345678',
 })
 
 const novosErros = reactive({})
@@ -32,8 +32,6 @@ const realizarLogin = async () => {
   const response = await usuarioStore.login(usuario)
 
   Object.assign(novosErros, usuarioStore.erros)
-
-  console.log('Minha respsota ', response)
 
   if (response.status != 200) {
     return

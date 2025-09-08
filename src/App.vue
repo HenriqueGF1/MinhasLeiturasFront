@@ -53,7 +53,7 @@ const logout = async () => {
       <div class="navbar-start">
         <router-link class="navbar-item" :to="{ name: 'leituras' }">Leituras</router-link>
         <router-link v-if="!isLogado" class="navbar-item" :to="{ name: 'usuario-cadastrar' }">
-          Cadastro
+          Cadastro de Usuário
         </router-link>
         <router-link v-if="isLogado" class="navbar-item" :to="{ name: 'leituras-cadastrar' }">
           Cadastrar Leitura
