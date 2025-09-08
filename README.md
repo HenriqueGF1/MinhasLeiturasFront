@@ -1,35 +1,58 @@
-# MinhasLeiturasFront
+# 📚 Gerenciamento de Leituras
 
-This template should help get you started developing with Vue 3 in Vite.
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.x-42b883)](https://vuejs.org/)
+[![Bulma](https://img.shields.io/badge/Bulma-0.9.4-00d1b2)](https://bulma.io/)
 
-## Recommended IDE Setup
+Este projeto é uma aplicação de **gerenciamento de leituras** que permite aos usuários cadastrar, organizar e acompanhar seu progresso em livros, HQs e outros.  
+Com ele, é possível definir metas, registrar avaliações, acompanhar estatísticas, receber lembretes de leitura e muito mais.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Customize configuration
+## 🚀 Tecnologias utilizadas (Front-end)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **Framework:** [Vue.js](https://vuejs.org/) (v3)
+- **Estilização:** [Bulma](https://bulma.io/) (v0.9.4)
 
-## Project Setup
+---
 
-```sh
-npm install
-```
+## 📡 APIs Integradas
 
-### Compile and Hot-Reload for Development
+- **[Google Books API](https://developers.google.com/books/docs/v1/using?hl=pt-br)**  
+  Para buscar informações completas dos livros, como título, autor, ISBN, capa e descrição.
 
-```sh
-npm run dev
-```
+---
 
-### Compile and Minify for Production
+## 📌 Funcionalidades
 
-```sh
-npm run build
-```
+- **Autenticação de Usuário**
+  - Cadastro com nome, e-mail, senha e data de nascimento
+  - Login com geração de token JWT
+  - Logout
 
-### Lint with [ESLint](https://eslint.org/)
+- **Gerenciamento de Livros**
+  - Cadastro de livros, HQs, etc.
+  - Pesquisa por ISBN
+  - Listagem, pesquisa e exclusão de livros
 
-```sh
-npm run lint
-```
+- **Progresso de Leitura**
+  - Registro diário do número de páginas lidas
+  - Acompanhamento da evolução de leitura
+
+- **Avaliações de Livros**
+  - Criação de avaliações
+  - Listagem e exclusão de avaliações
+
+---
+
+## 🏁 Passo a Passo para Baixar e Iniciar o Projeto
+
+PASSO A PASSO PARA BAIXAR E INICIAR O PROJETO
+
+1. Clone o repositório:
+   </br> `git clone https://github.com/HenriqueGF1/MinhasLeiturasFront.git` </br>
+   `cd MinhasLeiturasFront` </br>
+2. Instale as dependências do backend (Laravel):
+   </br> `npm install` </br>
+
+3. Inicie o servidor Laravel:
+   </br> `npm run dev` </br>
