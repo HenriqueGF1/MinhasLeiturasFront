@@ -41,7 +41,7 @@ const formatarData = (data) => {
     <div class="card-content">
       <p class="title is-6 has-text-centered">{{ leitura.titulo }}</p>
       <p class="subtitle is-7 has-text-centered">
-        {{ leitura.autor || 'Autor desconhecido' }}
+        {{ leitura.autor.nome || 'Autor desconhecido' }}
       </p>
 
       <div class="content tooltip mt-2" :data-tooltip="leitura.descricao">
