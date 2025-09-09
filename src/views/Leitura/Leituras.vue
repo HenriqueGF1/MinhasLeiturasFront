@@ -32,7 +32,7 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title has-text-centered mb-6">📚 Tela de Leituras</h1>
+      <h1 class="title has-text-centered mb-6">Leituras</h1>
 
       <div class="field has-addons has-addons-centered mb-5">
         <div class="control is-expanded">

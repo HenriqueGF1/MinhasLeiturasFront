@@ -16,7 +16,7 @@ onMounted(() => {
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title has-text-centered mb-6">📖 Tela de Avaliações</h1>
+      <h1 class="title has-text-centered mb-6">📖 Avaliações</h1>
 
       <div v-if="avaliacoesStore.estaCarregandoAvaliacao" class="has-text-centered my-6">
         <Carregando />

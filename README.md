@@ -44,6 +44,19 @@ Com ele, é possível definir metas, registrar avaliações, acompanhar estatís
 
 ---
 
+## Algumas telas
+
+- Tela de Leituras
+  ![Tela de Leituras](/printsReadme/tela-de-leituras.png 'Tela de Leituras')
+- Tela de Cadastro de Leituras
+  ![TTela de Cadastro de Leituras](/printsReadme/tela-de-cadastro-de-leitura.png 'Tela de Cadastro de Leituras')
+- Tela de Avaliações de Leituras
+  ![Tela de Avaliações de Leituras](/printsReadme/tela-de-avaliacoes.png 'Tela de Avaliações de Leituras')
+- Tela de Leituras do Usuário
+  ![Tela de Leituras do Usuário](/printsReadme/leituras-do-usuario.png 'Tela de Leituras do Usuário')
+
+---
+
 ## 🏁 Passo a Passo para Baixar e Iniciar o Projeto
 
 PASSO A PASSO PARA BAIXAR E INICIAR O PROJETO
